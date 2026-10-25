@@ -68,6 +68,8 @@ patch -p1 < cve-8.1.patch
   --enable-fpm \
   --disable-rpath \
   --disable-debug \
+  --without-sqlite3 \
+  --without-pdo-sqlite \
   --enable-mysqlnd \
   --with-mysqli=shared,mysqlnd \
   --with-pdo-mysql=shared,mysqlnd \
