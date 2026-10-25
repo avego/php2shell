@@ -130,8 +130,28 @@ systemctl restart php71-fpm 2>/dev/null || true
 
 ---
 
-## 7. Проверка работоспособности
+## 7. Проверка применения патча безопасности (CVE) и работоспособности
 
+### 1. Проверка применения патча безопасности (защита от CVE-2026-109618 / CVE-2026-109619):
+```bash
+# 1. Проверяем наличие защитной директивы в ядре PHP:
+/opt/php71/bin/php -i | grep memory_hard_limit_percent
+/opt/php71/bin/php-cgi -i | grep memory_hard_limit_percent
+
+# Ожидаемый вывод:
+# memory_hard_limit_percent => no value => no value
+
+# 2. Проверяем наличие защитных функций ядра в скомпилированных бинарниках:
+strings /opt/php71/bin/php | grep memory_hard_limit_percent
+strings /opt/php71/bin/php-cgi | grep memory_hard_limit_percent
+[ -f /opt/php71/sbin/php-fpm ] && strings /opt/php71/sbin/php-fpm | grep memory_hard_limit_percent || true
+
+# Ожидаемый вывод:
+# zend_set_memory_hard_limit_percent
+# memory_hard_limit_percent
+```
+
+### 2. Проверка работоспособности модулей и сайтов:
 ```bash
 # 1. Проверяем версию и дату сборки (должен подхватиться ionCube и OPcache):
 /opt/php71/bin/php -v

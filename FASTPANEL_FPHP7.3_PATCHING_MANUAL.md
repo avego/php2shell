@@ -153,10 +153,19 @@ install -m 755 sapi/fpm/php-fpm /opt/fphp/sbin/php-fpm
 systemctl restart fastpanel2-apps.service
 ```
 
-4. Проверяем статус:
+4. Проверяем статус сервиса и применение защиты:
 ```bash
+# 1. Проверяем статус службы FastPanel:
 systemctl status fastpanel2-apps.service --no-pager
+
+# 2. Проверяем наличие защитной директивы CVE в ядре fphp:
 /opt/fphp/bin/php -i | grep memory_hard_limit_percent
+# Ожидаемый вывод:
+# memory_hard_limit_percent => no value => no value
+
+# 3. Проверяем бинарники CLI и FPM:
+strings /opt/fphp/bin/php | grep memory_hard_limit_percent
+strings /opt/fphp/sbin/php-fpm | grep memory_hard_limit_percent
 ```
 
 ---

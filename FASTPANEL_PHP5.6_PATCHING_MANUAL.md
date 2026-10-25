@@ -141,10 +141,34 @@ systemctl restart nginx 2>/dev/null || true
 systemctl restart php56-fpm 2>/dev/null || true
 ```
 
-### Шаг 7. Проверка работоспособности
+### Шаг 7. Проверка применения патча безопасности (CVE) и работоспособности
 
-Выполните три обязательных теста в консоли:
+#### 1. Проверка применения патча безопасности (защита от CVE-2026-109618 / CVE-2026-109619):
 
+> **Особенность архитектуры PHP 5.6 (Zend Engine 2):**  
+> В ядре PHP 5.6 защита от повреждения памяти при OOM реализована через механизм отложенного перехвата **`zend_handle_delayed_oom`** и стейт-машину **`ZEND_OOM_STATE_*`** с автоматическим жестким лимитом памяти (200% или +1G). Поэтому проверка производится по символам отложенного OOM:
+
+```bash
+# Проверяем наличие защитного механизма zend_handle_delayed_oom в бинарниках:
+strings /opt/php56/bin/php | grep zend_handle_delayed_oom
+strings /opt/php56/bin/php-cgi | grep zend_handle_delayed_oom
+[ -f /opt/php56/sbin/php-fpm ] && strings /opt/php56/sbin/php-fpm | grep zend_handle_delayed_oom || true
+
+# Ожидаемый вывод:
+# zend_handle_delayed_oom
+```
+
+Дополнительно можно проверить стейт-машину ядра:
+```bash
+strings /opt/php56/bin/php | grep ZEND_OOM_STATE
+# Ожидаемый вывод:
+# ZEND_OOM_STATE_NONE
+# ZEND_OOM_STATE_HANDLING
+# ZEND_OOM_STATE_HANDLED
+# ZEND_OOM_STATE_PENDING
+```
+
+#### 2. Проверка работоспособности модулей и сайтов:
 ```bash
 # 1. Проверка даты сборки и загрузки энкодеров (ionCube, OPcache, Zend Guard):
 /opt/php56/bin/php -v

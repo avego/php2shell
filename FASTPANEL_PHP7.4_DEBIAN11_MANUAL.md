@@ -127,23 +127,25 @@ systemctl restart apache2
 
 ---
 
-## 7. Проверка результата
+## 7. Проверка применения патча безопасности (CVE) и работоспособности
 
-1. Проверяем наличие новой директивы ядра PHP:
+#### 1. Проверка применения патча безопасности:
 ```bash
+# 1. Проверяем наличие защитной директивы в ядре PHP:
 php7.4 -i | grep memory_hard_limit_percent
-```
-*Вывод:*
-```
-memory_hard_limit_percent => no value => no value
+# Вывод:
+# memory_hard_limit_percent => no value => no value
+
+# 2. Проверяем наличие защитных символов ядра в системных бинарниках:
+strings /usr/bin/php7.4 | grep memory_hard_limit_percent
+strings /usr/sbin/php-fpm7.4 | grep memory_hard_limit_percent
 ```
 
-2. Проверяем статус пулов сайтов FastPanel:
+#### 2. Проверка версий deb-пакетов и работы сервисов:
 ```bash
-systemctl status php7.4-fpm --no-pager
-```
-
-3. Проверяем версии установленных пакетов в базе `dpkg`:
-```bash
+# 1. Проверяем версии установленных пакетов с суффиксом +cve1:
 dpkg -l | grep '7.4.33-1+deb11u12+cve1'
+
+# 2. Проверяем статус FPM и пулов сайтов FastPanel:
+systemctl status php7.4-fpm --no-pager
 ```
