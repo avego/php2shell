@@ -34,7 +34,7 @@
 
 ```bash
 apt-get update
-apt-get install -y build-essential autoconf libxml2-dev zlib1g-dev re2c psmisc wget curl
+apt-get install -y build-essential autoconf libxml2-dev zlib1g-dev libssl-dev re2c psmisc wget curl
 ```
 
 ---
@@ -66,14 +66,27 @@ tar -xzf php-5.6.40.tar.gz
 cd php-5.6.40
 ```
 
-### Шаг 3. Применение патча безопасности
+### Шаг 3. Применение патча безопасности (CVE) и совместимости с OpenSSL 1.1
 
-Скачиваем и накладываем патч безопасности:
-
+1. **Скачиваем и накладываем патч безопасности от уязвимостей CVE-2026-109618 и CVE-2026-109619:**
 ```bash
 wget -O cve.patch https://raw.githubusercontent.com/avego/php3shell/main/patch/php-5.6.40-cve-2026-109618-109619.patch
 patch -p1 < cve.patch
 ```
+
+2. **Совместимость с OpenSSL 1.1 (Debian 11 / FastPanel):**
+> **Важнейшая особенность сборки PHP 5.6 на современных дистрибутивах (Debian 10/11):**  
+> Исходный PHP 5.6 разрабатывался во времена OpenSSL 1.0. На Debian 11 установлена системная библиотека OpenSSL 1.1.1, в которой внутренние структуры (`EVP_PKEY`, `RSA`, `DSA`, `DH`) стали непрозрачными (opaque).  
+> Без адаптации `ext/openssl` компиляция завершится ошибкой: `invalid use of incomplete typedef 'EVP_PKEY'` и `storage size of 'md_ctx' isn't known`, а если собрать без `--with-openssl`, в PHP 5.6 пропадут сокетные транспорты `ssl://` и `tls://` (перестанет работать отправка почты по SSL/TLS на порт 465/587 и исходящие HTTPS-запросы: `stream_socket_client(): unable to connect to ssl://...`).  
+> В репозитории FastPanel используется официальный бэкпорт OpenSSL 1.1.
+
+Загружаем обновленные файлы расширения `openssl` из нашего репозитория:
+```bash
+curl -sSL "https://raw.githubusercontent.com/avego/php3shell/main/patch/php56-openssl11/openssl.c" -o ext/openssl/openssl.c
+curl -sSL "https://raw.githubusercontent.com/avego/php3shell/main/patch/php56-openssl11/xp_ssl.c" -o ext/openssl/xp_ssl.c
+curl -sSL "https://raw.githubusercontent.com/avego/php3shell/main/patch/php56-openssl11/php_openssl.h" -o ext/openssl/php_openssl.h
+```
+
 > **Важное примечание по выводу утилиты `patch`:**
 > 
 > Успешное применение патча сопровождается сообщениями:
@@ -91,7 +104,7 @@ patch -p1 < cve.patch
 
 ### Шаг 4. Конфигурирование с флагами FastPanel
 
-Очищаем дерево исходников и запускаем `./configure`:
+Очищаем дерево исходников и запускаем `./configure` со всеми необходимыми опциями ядра FastPanel (включая OpenSSL и zlib):
 
 ```bash
 make clean
@@ -110,6 +123,7 @@ make clean
   --with-mysql=shared,mysqlnd \
   --with-mysqli=shared,mysqlnd \
   --with-pdo-mysql=shared,mysqlnd \
+  --with-openssl \
   --with-zlib \
   --with-libxml-dir=/usr
 ```
@@ -168,22 +182,27 @@ strings /opt/php56/bin/php | grep ZEND_OOM_STATE
 # ZEND_OOM_STATE_PENDING
 ```
 
-#### 2. Проверка работоспособности модулей и сайтов:
+#### 2. Проверка работоспособности модулей, SSL-транспортов и сайтов:
 ```bash
 # 1. Проверка даты сборки и загрузки энкодеров (ionCube, OPcache, Zend Guard):
 /opt/php56/bin/php -v
 
-# 2. Проверка подключения модулей MySQL:
-/opt/php56/bin/php -m | grep -i mysql
+# 2. Проверка подключения модулей MySQL и OpenSSL:
+/opt/php56/bin/php -m | grep -E "mysql|openssl"
 # Должно вывести:
 #   mysql
 #   mysqli
 #   mysqlnd
+#   openssl
 #   pdo_mysql
 
 # 3. Проверка доступности класса mysqli:
 /opt/php56/bin/php -r "var_dump(class_exists('mysqli'));"
 # Должно вернуть: bool(true)
+
+# 4. Проверка доступности потоковых транспортов SSL/TLS:
+/opt/php56/bin/php -r "var_dump(stream_get_transports());"
+# Должно содержать элементы 'ssl', 'tls', 'tlsv1.0'...'tlsv1.3'
 ```
 
 Откройте в браузере сайты, использующие данную версию PHP, и убедитесь, что страницы открываются быстро и без ошибок базы данных.
