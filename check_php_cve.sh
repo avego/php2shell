@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env bash
+#!/usr/bin/env bash
 # ==============================================================================
 # FastPanel & System PHP Security Audit Script
 # Checks PHP installations against CVE-2026-109618 and CVE-2026-109619
@@ -124,6 +124,13 @@ audit_php() {
     fi
 
     echo -e "  Audit mechanism: ${check_type}"
+
+    # Check OpenSSL and SSL transports
+    local ssl_status="${RED}MISSING (no ssl:// transport)${NC}"
+    if "$cli_bin" -r '$t=stream_get_transports(); exit(in_array("ssl", $t) && in_array("tls", $t) ? 0 : 1);' 2>/dev/null; then
+        ssl_status="${GREEN}ACTIVE (OpenSSL ssl:// & tls:// available)${NC}"
+    fi
+    echo -e "  SSL Transports : ${ssl_status}"
 
     # Print CLI Status
     if [ "$cli_protected" -eq 1 ]; then
