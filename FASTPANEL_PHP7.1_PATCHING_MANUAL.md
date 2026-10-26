@@ -92,9 +92,11 @@ make clean
   --enable-fpm \
   --disable-rpath \
   --disable-debug \
+  --disable-phar \
   --enable-mysqlnd \
   --with-mysqli=shared,mysqlnd \
   --with-pdo-mysql=shared,mysqlnd \
+  --with-openssl \
   --with-zlib \
   --with-libxml-dir=/usr
 ```
@@ -151,21 +153,26 @@ strings /opt/php71/bin/php-cgi | grep memory_hard_limit_percent
 # memory_hard_limit_percent
 ```
 
-### 2. Проверка работоспособности модулей и сайтов:
+### 2. Проверка работоспособности модулей, OpenSSL и сайтов:
 ```bash
 # 1. Проверяем версию и дату сборки (должен подхватиться ionCube и OPcache):
 /opt/php71/bin/php -v
 
-# 2. Проверяем модули MySQL:
-/opt/php71/bin/php -m | grep -i mysql
+# 2. Проверяем модули MySQL и OpenSSL:
+/opt/php71/bin/php -m | grep -E "mysql|openssl"
 # Ожидаемый вывод:
 #   mysqli
 #   mysqlnd
+#   openssl
 #   pdo_mysql
 
 # 3. Проверяем доступность класса mysqli:
 /opt/php71/bin/php -r "var_dump(class_exists('mysqli'));"
 # Ожидаемый вывод: bool(true)
+
+# 4. Проверяем сокетные транспорты SSL/TLS:
+/opt/php71/bin/php -r "var_dump(stream_get_transports());"
+# Должно содержать 'ssl' и 'tls'
 ```
 
 После этого проверьте в браузере сайты, работающие на PHP 7.1.

@@ -1,4 +1,4 @@
-﻿# Инструкция по пропатчиванию и пересборке PHP 8.1 в FastPanel (Debian 11 x86_64)
+# Инструкция по пропатчиванию и пересборке PHP 8.1 в FastPanel (Debian 11 x86_64)
 
 Данная инструкция описывает процесс закрытия критических уязвимостей **CVE-2026-109618** и **CVE-2026-109619** (RCE через memory_limit bailout / повреждение глобального состояния) для **PHP 8.1** в **FastPanel** с сохранением 100% совместимости с модулями FastPanel (`OPcache`, `mysqli.so`, `pdo_mysql.so`, `redis.so` и др.).
 
@@ -92,11 +92,13 @@ patch -p1 < cve-8.1.patch
   --enable-fpm \
   --disable-rpath \
   --disable-debug \
+  --disable-phar \
   --without-sqlite3 \
   --without-pdo-sqlite \
   --enable-mysqlnd \
   --with-mysqli=shared,mysqlnd \
   --with-pdo-mysql=shared,mysqlnd \
+  --with-openssl \
   --with-zlib \
   --with-pcre-jit
 ```
@@ -153,20 +155,27 @@ strings /opt/php81/bin/php-cgi | grep memory_hard_limit_percent
 # memory_hard_limit_percent
 ```
 
-### 2. Проверка работоспособности модулей и сайтов:
+### 2. Проверка работоспособности модулей, OpenSSL и сайтов:
 ```bash
 # 1. Проверяем версию и дату сборки (должен подхватиться OPcache):
 /opt/php81/bin/php -v
 
-# 2. Проверяем модули MySQL:
-/opt/php81/bin/php -m | grep -i mysql
+# 2. Проверяем модули MySQL и OpenSSL:
+/opt/php81/bin/php -m | grep -E "mysql|openssl"
 # Ожидаемый вывод:
 #   mysqli
 #   mysqlnd
+#   openssl
 #   pdo_mysql
 
 # 3. Проверяем доступность класса mysqli:
 /opt/php81/bin/php -r "var_dump(class_exists('mysqli'));"
+# Ожидаемый вывод: bool(true)
+
+# 4. Проверяем сокетные транспорты SSL/TLS:
+/opt/php81/bin/php -r "var_dump(stream_get_transports());"
+# Должно содержать 'ssl' и 'tls'
+```
 # Ожидаемый вывод: bool(true)
 ```
 
