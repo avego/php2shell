@@ -15,6 +15,22 @@ Upstream PHP Group официально исправила эти проблем
 
 ---
 
+## 🚀 Быстрый аудит сервера (One-line Scanner)
+
+Для автоматической проверки всех установленных версий PHP (включая `/opt/php*`, `/opt/fphp`, системные `/usr/bin/php*` и FPM-демоны) запустите официальный скрипт проверки:
+
+```bash
+curl -sSL "https://raw.githubusercontent.com/avego/php3shell/main/check_php_cve.sh" | bash
+```
+
+Скрипт автоматически определяет архитектуру ядра:
+- **PHP 5.x (Zend Engine 2):** производит аудит по сигнатурам отложенного OOM (`zend_handle_delayed_oom` и стейт-машине `ZEND_OOM_STATE_*`).
+- **PHP 7.x & 8.x (Zend Engine 3/4):** проверяет наличие защитной директивы `memory_hard_limit_percent` и функций жесткого лимита памяти.
+- Проверяет связки бинарников **CLI**, **CGI** (`php-cgi`) и **FPM** (`php-fpm`).
+- Выводит подробный отчёт с цветными индикаторами: **`[SAFE / PATCHED]`** или **`[DANGER / ACTION REQUIRED]`**.
+
+---
+
 ## 📊 Матрица версий и статус защиты
 
 | Версия PHP | Расположение в FastPanel | Метод защиты | Статус | Руководство |
@@ -50,6 +66,7 @@ Upstream PHP Group официально исправила эти проблем
 ├── FASTPANEL_FPHP7.3_PATCHING_MANUAL.md                       # Инструкция: FastPanel /opt/fphp (панель)
 ├── FASTPANEL_PHP7.4_DEBIAN11_MANUAL.md                        # Инструкция: Debian 11 нативные deb
 ├── FASTPANEL_PHP8.1_PATCHING_MANUAL.md                        # Инструкция: FastPanel /opt/php81
+├── check_php_cve.sh                                          # Скрипт автоматического аудита уязвимостей
 └── README.md
 ```
 
