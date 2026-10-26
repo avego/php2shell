@@ -119,6 +119,7 @@ make clean
   --enable-fpm \
   --disable-rpath \
   --disable-debug \
+  --disable-phar \
   --enable-mysqlnd \
   --with-mysql=shared,mysqlnd \
   --with-mysqli=shared,mysqlnd \
