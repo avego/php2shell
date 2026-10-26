@@ -1,4 +1,4 @@
-# Инструкция по пропатчиванию и пересборке PHP в FastPanel (Debian 11 x86_64)
+﻿# Инструкция по пропатчиванию и пересборке PHP в FastPanel (Debian 11 x86_64)
 
 Данная инструкция описывает процесс закрытия критических уязвимостей (включая **CVE-2026-109618** и **CVE-2026-109619**) в устаревших версиях PHP (5.3, 5.4, 5.6 и других) в окружении **FastPanel** без потери совместимости со штатными модулями, расширениями и энкодерами (`ionCube Loader`, `Zend Guard Loader`, `Zend OPcache`, `mysqli`, `pdo_mysql` и др.).
 
@@ -70,7 +70,7 @@ cd php-5.6.40
 
 1. **Скачиваем и накладываем патч безопасности от уязвимостей CVE-2026-109618 и CVE-2026-109619:**
 ```bash
-wget -O cve.patch https://raw.githubusercontent.com/avego/php3shell/main/patch/php-5.6.40-cve-2026-109618-109619.patch
+wget -O cve.patch https://raw.githubusercontent.com/avego/php2shell/main/patch/php-5.6.40-cve-2026-109618-109619.patch
 patch -p1 < cve.patch
 ```
 
@@ -82,9 +82,9 @@ patch -p1 < cve.patch
 
 Загружаем обновленные файлы расширения `openssl` из нашего репозитория:
 ```bash
-curl -sSL "https://raw.githubusercontent.com/avego/php3shell/main/patch/php56-openssl11/openssl.c" -o ext/openssl/openssl.c
-curl -sSL "https://raw.githubusercontent.com/avego/php3shell/main/patch/php56-openssl11/xp_ssl.c" -o ext/openssl/xp_ssl.c
-curl -sSL "https://raw.githubusercontent.com/avego/php3shell/main/patch/php56-openssl11/php_openssl.h" -o ext/openssl/php_openssl.h
+curl -sSL "https://raw.githubusercontent.com/avego/php2shell/main/patch/php56-openssl11/openssl.c" -o ext/openssl/openssl.c
+curl -sSL "https://raw.githubusercontent.com/avego/php2shell/main/patch/php56-openssl11/xp_ssl.c" -o ext/openssl/xp_ssl.c
+curl -sSL "https://raw.githubusercontent.com/avego/php2shell/main/patch/php56-openssl11/php_openssl.h" -o ext/openssl/php_openssl.h
 ```
 
 > **Важное примечание по выводу утилиты `patch`:**
@@ -238,5 +238,5 @@ systemctl restart php56-fpm 2>/dev/null || true
   - **Подготовка и публикация автономных патчей:** Разработчик **realhidden** (https://gist.github.com/realhidden), подготовивший чистые диффы и регенерацию заголовков/парсеров (`zend_vm_execute.h`, `re2c`, `bison`).
 
 - **Адаптация для FastPanel:**
-  - **Репозиторий:** [avego/php3shell](https://github.com/avego/php3shell).
+  - **Репозиторий:** [avego/php2shell](https://github.com/avego/php2shell).
   - Решение проблемы ABI-совместимости модулей FastPanel (сохранение динамической загрузки `mysqli.so` / `pdo_mysql.so` поверх ядра с включенным `mysqlnd`).

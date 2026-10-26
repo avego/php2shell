@@ -1,4 +1,4 @@
-# FastPanel PHP Security Patching (CVE-2026-109618 & CVE-2026-109619)
+﻿# FastPanel PHP Security Patching (CVE-2026-109618 & CVE-2026-109619)
 
 Репозиторий содержит проверенные патчи безопасности, адаптированные бэкпорты и подробные пошаговые руководства по нативной компиляции и устранению критических уязвимостей ядра Zend Engine (**CVE-2026-109618** и **CVE-2026-109619**) для всех версий PHP в панели управления **FastPanel** и операционной системе **Debian 11 (Bullseye) x86_64** (Apache `mod_fcgid`, PHP-FPM, системный FPM-сервис самой панели).
 
@@ -20,7 +20,7 @@ Upstream PHP Group официально исправила эти проблем
 Для автоматической проверки всех установленных версий PHP (включая `/opt/php*`, `/opt/fphp`, системные `/usr/bin/php*` и FPM-демоны) запустите официальный скрипт проверки:
 
 ```bash
-curl -sSL "https://raw.githubusercontent.com/avego/php3shell/main/check_php_cve.sh" | bash
+curl -sSL "https://raw.githubusercontent.com/avego/php2shell/main/check_php_cve.sh" | bash
 ```
 
 Скрипт автоматически определяет архитектуру ядра:
@@ -176,7 +176,7 @@ systemctl restart phpXX-fpm 2>/dev/null || true
   - **Подготовка и публикация автономных патчей:** Разработчик **realhidden** ([gists/realhidden](https://gist.github.com/realhidden)), выполнивший генерацию чистых патчей и регенерацию зависимостей (`zend_vm_execute.h`, `re2c`, `bison`).
 
 - **Адаптация для FastPanel и Debian 11:**
-  - **Репозиторий:** [avego/php3shell](https://github.com/avego/php3shell).
+  - **Репозиторий:** [avego/php2shell](https://github.com/avego/php2shell).
   - Адаптация ABI-совместимости модулей FastPanel (динамический `mysqli.so` / `pdo_mysql.so` поверх `mysqlnd`).
   - Разработка эталонного патча и процедуры нативной сборки `.deb` пакетов для системного PHP 7.4 в Debian 11 Bullseye.
   - Адаптация и сборка защищённого окружения для внутренней службы FastPanel `/opt/fphp` (`fastpanel2-apps.service`).

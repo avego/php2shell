@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+﻿#!/usr/bin/env bash
 # ==============================================================================
 # FastPanel & System PHP Security Audit Script
 # Checks PHP installations against CVE-2026-109618 and CVE-2026-109619
@@ -205,7 +205,7 @@ if [ "$TOTAL_VULNERABLE" -gt 0 ]; then
     echo -e "  Vulnerable (Unpatched):            ${RED}${BOLD}${TOTAL_VULNERABLE}${NC}"
     echo -e "${BOLD}${CYAN}====================================================================${NC}"
     echo -e "${RED}${BOLD}[!] ATTENTION: One or more PHP installations require patching!${NC}"
-    echo -e "Refer to manuals at: ${BOLD}https://github.com/avego/php3shell${NC}"
+    echo -e "Refer to manuals at: ${BOLD}https://github.com/avego/php2shell${NC}"
 else
     echo -e "  Vulnerable (Unpatched):            ${GREEN}${BOLD}0${NC}"
     echo -e "${BOLD}${CYAN}====================================================================${NC}"

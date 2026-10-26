@@ -62,7 +62,7 @@ wget https://www.php.net/distributions/php-7.3.33.tar.gz
 tar -xzf php-7.3.33.tar.gz
 cd php-7.3.33
 
-curl -sSL "https://raw.githubusercontent.com/avego/php3shell/main/patch/php-7.3.33-cve-2026-109618-109619.patch" | patch -p1
+curl -sSL "https://raw.githubusercontent.com/avego/php2shell/main/patch/php-7.3.33-cve-2026-109618-109619.patch" | patch -p1
 ```
 > **Важное примечание по выводу утилиты `patch`:**
 > 

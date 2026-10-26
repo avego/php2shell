@@ -59,7 +59,7 @@ cd /usr/src/deb-php74/php7.4-7.4.33
 
 Скачиваем адаптированный под Debian 11 патч:
 ```bash
-curl -sSL "https://raw.githubusercontent.com/avego/php3shell/main/patch/php-7.4.33-debian11-cve-2026-109618-109619.patch" -o /tmp/php74-deb11.patch
+curl -sSL "https://raw.githubusercontent.com/avego/php2shell/main/patch/php-7.4.33-debian11-cve-2026-109618-109619.patch" -o /tmp/php74-deb11.patch
 patch -p1 < /tmp/php74-deb11.patch
 rm -f /tmp/php74-deb11.patch
 ```

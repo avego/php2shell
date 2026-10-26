@@ -1,4 +1,4 @@
-# Инструкция по пропатчиванию и пересборке PHP 7.1.33 в FastPanel (Debian 11 x86_64)
+﻿# Инструкция по пропатчиванию и пересборке PHP 7.1.33 в FastPanel (Debian 11 x86_64)
 
 Данная инструкция описывает закрытие критических уязвимостей **CVE-2026-109618** и **CVE-2026-109619** (RCE через memory_limit bailout / повреждение глобального состояния) для **PHP 7.1.33** в **FastPanel** с сохранением 100% совместимости с модулями FastPanel (`ionCube Loader`, `OPcache`, `mysqli.so`, `pdo_mysql.so` и др.).
 
@@ -57,7 +57,7 @@ tar -xzf php-7.1.33.tar.gz
 cd php-7.1.33
 
 # Скачиваем патч для PHP 7.1.33
-wget -O cve-7.1.patch https://raw.githubusercontent.com/avego/php3shell/main/patch/php-7.1.33-cve-2026-109618-109619.patch
+wget -O cve-7.1.patch https://raw.githubusercontent.com/avego/php2shell/main/patch/php-7.1.33-cve-2026-109618-109619.patch
 patch -p1 < cve-7.1.patch
 ```
 > **Важное примечание по выводу утилиты `patch`:**
@@ -205,5 +205,5 @@ systemctl restart php71-fpm 2>/dev/null || true
   - **Подготовка и публикация автономных патчей:** Разработчик **realhidden** (https://gist.github.com/realhidden), подготовивший чистые диффы и регенерацию заголовков/парсеров (`zend_vm_execute.h`, `re2c`, `bison`).
 
 - **Адаптация для FastPanel:**
-  - **Репозиторий:** [avego/php3shell](https://github.com/avego/php3shell).
+  - **Репозиторий:** [avego/php2shell](https://github.com/avego/php2shell).
   - Решение проблемы ABI-совместимости модулей FastPanel (сохранение динамической загрузки `mysqli.so` / `pdo_mysql.so` поверх ядра с включенным `mysqlnd`).
