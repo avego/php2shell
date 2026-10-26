@@ -99,24 +99,24 @@ audit_php() {
             fi
         fi
     else
-        check_type="Zend Engine 3/4 (memory_hard_limit / zend_mm_safe_error_ex / max_multipart_body_parts)"
+        check_type="Zend Engine 3/4 (memory_hard_limit_percent / zend_mm_safe_error_ex)"
         # Check CLI binary
-        if "$cli_bin" -i 2>/dev/null | grep -iE "memory_hard_limit_percent|max_multipart_body_parts" >/dev/null 2>&1 || \
-           strings "$cli_bin" 2>/dev/null | grep -iE "memory_hard_limit_percent|zend_mm_safe_error_ex|max_multipart_body_parts" >/dev/null 2>&1; then
+        if "$cli_bin" -i 2>/dev/null | grep -i "memory_hard_limit_percent" >/dev/null 2>&1 || \
+           strings "$cli_bin" 2>/dev/null | grep -E "memory_hard_limit_percent|zend_mm_safe_error_ex" >/dev/null 2>&1; then
             cli_protected=1
         fi
 
         # Check CGI binary
         if [ -n "$cgi_bin" ] && [ -x "$cgi_bin" ]; then
-            if "$cgi_bin" -i 2>/dev/null | grep -iE "memory_hard_limit_percent|max_multipart_body_parts" >/dev/null 2>&1 || \
-               strings "$cgi_bin" 2>/dev/null | grep -iE "memory_hard_limit_percent|zend_mm_safe_error_ex|max_multipart_body_parts" >/dev/null 2>&1; then
+            if "$cgi_bin" -i 2>/dev/null | grep -i "memory_hard_limit_percent" >/dev/null 2>&1 || \
+               strings "$cgi_bin" 2>/dev/null | grep -E "memory_hard_limit_percent|zend_mm_safe_error_ex" >/dev/null 2>&1; then
                 cgi_protected=1
             fi
         fi
 
         # Check FPM binary
         if [ -n "$fpm_bin" ] && [ -x "$fpm_bin" ]; then
-            if strings "$fpm_bin" 2>/dev/null | grep -iE "memory_hard_limit_percent|zend_mm_safe_error_ex|max_multipart_body_parts" >/dev/null 2>&1; then
+            if strings "$fpm_bin" 2>/dev/null | grep -E "memory_hard_limit_percent|zend_mm_safe_error_ex" >/dev/null 2>&1; then
                 fpm_protected=1
             fi
         fi
