@@ -27,7 +27,7 @@
 
 ```bash
 apt-get update
-apt-get install -y build-essential autoconf automake libtool bison re2c libxml2-dev zlib1g-dev pkg-config psmisc wget curl
+apt-get install -y build-essential autoconf automake libtool bison re2c libxml2-dev zlib1g-dev libssl-dev pkg-config psmisc wget curl
 ```
 
 ---

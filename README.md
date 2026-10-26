@@ -1,4 +1,4 @@
-﻿# FastPanel PHP Security Patching (CVE-2026-109618 & CVE-2026-109619)
+# FastPanel PHP Security Patching (CVE-2026-109618 & CVE-2026-109619)
 
 Репозиторий содержит проверенные патчи безопасности, адаптированные бэкпорты и подробные пошаговые руководства по нативной компиляции и устранению критических уязвимостей ядра Zend Engine (**CVE-2026-109618** и **CVE-2026-109619**) для всех версий PHP в панели управления **FastPanel** и операционной системе **Debian 11 (Bullseye) x86_64** (Apache `mod_fcgid`, PHP-FPM, системный FPM-сервис самой панели).
 
@@ -48,7 +48,12 @@ curl -sSL "https://raw.githubusercontent.com/avego/php3shell/main/check_php_cve.
 ## 📁 Структура репозитория
 
 ```text
-├── patch/                                                     # Патчи безопасности
+├── patch/                                                     # Патчи безопасности и совместимости
+│   ├── php56-openssl11/                                       # Адаптированные исходники OpenSSL 1.1 для PHP 5.6
+│   │   ├── openssl.c
+│   │   ├── xp_ssl.c
+│   │   └── php_openssl.h
+│   ├── php-5.6-openssl-1.1.patch                              # Unified diff совместимости OpenSSL 1.1 для PHP 5.6
 │   ├── php-5.2.17-cve-2026-109618-109619.patch
 │   ├── php-5.3.29-cve-2026-109618-109619.patch
 │   ├── php-5.4.45-cve-2026-109618-109619.patch
@@ -60,6 +65,7 @@ curl -sSL "https://raw.githubusercontent.com/avego/php3shell/main/check_php_cve.
 │   ├── php-7.4.33-cve-2026-109618-109619.patch                # Для чистого upstream tar.gz
 │   ├── php-7.4.33-debian11-cve-2026-109618-109619.patch       # Эталонный diff для dpkg Debian 11
 │   ├── php-8.0.30-cve-2026-109618-109619.patch
+│   ├── php-8.1.29-cve-2026-109618-109619.patch
 │   └── php-8.1.34-cve-2026-109618-109619.patch
 ├── FASTPANEL_PHP5.6_PATCHING_MANUAL.md                        # Инструкция: FastPanel /opt/php56
 ├── FASTPANEL_PHP7.1_PATCHING_MANUAL.md                        # Инструкция: FastPanel /opt/php71
