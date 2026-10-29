@@ -75,20 +75,22 @@ detect_os() {
 # Detect running web servers
 detect_web_server() {
     local servers=()
-    if pgrep -x nginx >/dev/null 2>&1 || pgrep -f "nginx:" >/dev/null 2>&1; then
-        servers+=("nginx")
-    fi
-    if pgrep -x apache2 >/dev/null 2>&1 || pgrep -x httpd >/dev/null 2>&1 || pgrep -f "apache2|httpd" >/dev/null 2>&1; then
-        servers+=("apache")
-    fi
-    if pgrep -x openlitespeed >/dev/null 2>&1 || pgrep -f "openlitespeed|lsws" >/dev/null 2>&1; then
-        servers+=("openlitespeed")
-    fi
-    if pgrep -x caddy >/dev/null 2>&1; then
-        servers+=("caddy")
-    fi
-    if pgrep -x lighttpd >/dev/null 2>&1; then
-        servers+=("lighttpd")
+    if command -v pgrep >/dev/null 2>&1; then
+        if pgrep -x nginx >/dev/null 2>&1 || pgrep -f "nginx:" >/dev/null 2>&1; then
+            servers+=("nginx")
+        fi
+        if pgrep -x apache2 >/dev/null 2>&1 || pgrep -x httpd >/dev/null 2>&1 || pgrep -f "apache2|httpd" >/dev/null 2>&1; then
+            servers+=("apache/httpd")
+        fi
+        if pgrep -x openlitespeed >/dev/null 2>&1 || pgrep -x litespeed >/dev/null 2>&1 || pgrep -f "openlitespeed|lsws|lshttpd" >/dev/null 2>&1; then
+            servers+=("litespeed/ols")
+        fi
+        if pgrep -x caddy >/dev/null 2>&1; then
+            servers+=("caddy")
+        fi
+        if pgrep -x lighttpd >/dev/null 2>&1; then
+            servers+=("lighttpd")
+        fi
     fi
 
     if [ ${#servers[@]} -eq 0 ]; then
@@ -102,7 +104,9 @@ detect_web_server() {
 # Detect installed hosting control panels
 detect_control_panels() {
     local panels=()
-    if [ -d "/usr/share/fastpanel2" ] || [ -d "/opt/fphp" ] || dpkg -l fastpanel2 >/dev/null 2>&1; then
+    if [ -d "/usr/share/fastpanel2" ] || [ -d "/opt/fphp" ] || \
+       { command -v dpkg >/dev/null 2>&1 && dpkg -l fastpanel2 >/dev/null 2>&1; } || \
+       { command -v rpm >/dev/null 2>&1 && rpm -q fastpanel2 >/dev/null 2>&1; }; then
         panels+=("FastPanel (/opt/php*, /opt/fphp)")
     fi
     if [ -d "/usr/local/mgr5" ]; then
@@ -123,6 +127,9 @@ detect_control_panels() {
     if [ -d "/opt/cpanel" ] || [ -d "/var/cpanel" ]; then
         panels+=("cPanel / EasyApache (/opt/cpanel/ea-php*)")
     fi
+    if [ -d "/opt/alt" ]; then
+        panels+=("CloudLinux alt-php (/opt/alt/php*)")
+    fi
     if [ -d "/usr/local/directadmin" ]; then
         panels+=("DirectAdmin (/usr/local/php*)")
     fi
@@ -135,8 +142,8 @@ detect_control_panels() {
     if [ -d "/opt/keyhelp" ]; then
         panels+=("KeyHelp (/opt/keyhelp/php)")
     fi
-    if [ -d "/opt/remi" ]; then
-        panels+=("Remi Repository (/opt/remi/php*)")
+    if [ -d "/opt/remi" ] || [ -d "/opt/rh" ]; then
+        panels+=("Remi / RedHat SCL (/opt/remi/php*, /opt/rh/rh-php*)")
     fi
 
     if [ ${#panels[@]} -eq 0 ]; then
@@ -152,10 +159,14 @@ if ! command -v strings >/dev/null 2>&1; then
     echo -e "${YELLOW}[!] Warning: 'strings' utility not found. Installing binutils...${NC}"
     if command -v apt-get >/dev/null 2>&1; then
         apt-get update -qq && apt-get install -y -qq binutils >/dev/null 2>&1 || true
-    elif command -v yum >/dev/null 2>&1; then
-        yum install -y -q binutils >/dev/null 2>&1 || true
     elif command -v dnf >/dev/null 2>&1; then
         dnf install -y -q binutils >/dev/null 2>&1 || true
+    elif command -v yum >/dev/null 2>&1; then
+        yum install -y -q binutils >/dev/null 2>&1 || true
+    elif command -v apk >/dev/null 2>&1; then
+        apk add --no-cache binutils >/dev/null 2>&1 || true
+    elif command -v pacman >/dev/null 2>&1; then
+        pacman -Sy --noconfirm binutils >/dev/null 2>&1 || true
     fi
 fi
 
@@ -456,16 +467,26 @@ if [ -d "/opt/cpanel" ]; then
     done
 fi
 
-# 5. Remi Repository SCL (/opt/remi/php*)
-if [ -d "/opt/remi" ]; then
-    for php_dir in /opt/remi/php*; do
-        if [ -d "$php_dir" ] && [ -x "${php_dir}/root/usr/bin/php" ]; then
-            label=$(basename "$php_dir")
-            audit_php "Remi SCL ${label}" \
-                "${php_dir}/root/usr/bin/php" \
-                "${php_dir}/root/usr/bin/php-cgi" \
-                "${php_dir}/root/usr/sbin/php-fpm" \
-                ""
+# 5. Remi Repository SCL (/opt/remi/php*) & RedHat SCL (/opt/rh/rh-php*) & CloudLinux (/opt/alt/php*)
+for scl_dir in /opt/remi/php* /opt/rh/rh-php*; do
+    if [ -d "$scl_dir" ] && [ -x "${scl_dir}/root/usr/bin/php" ]; then
+        label=$(basename "$scl_dir")
+        audit_php "Remi/RHSCL ${label}" \
+            "${scl_dir}/root/usr/bin/php" \
+            "${scl_dir}/root/usr/bin/php-cgi" \
+            "${scl_dir}/root/usr/sbin/php-fpm" \
+            "${scl_dir}/root/usr/bin/lsphp"
+    fi
+done
+if [ -d "/opt/alt" ]; then
+    for alt_dir in /opt/alt/php[0-9]*; do
+        if [ -d "$alt_dir" ] && [ -x "${alt_dir}/usr/bin/php" ]; then
+            label=$(basename "$alt_dir")
+            audit_php "CloudLinux alt-${label}" \
+                "${alt_dir}/usr/bin/php" \
+                "${alt_dir}/usr/bin/php-cgi" \
+                "${alt_dir}/usr/sbin/php-fpm" \
+                "${alt_dir}/usr/bin/lsphp"
         fi
     done
 fi
@@ -510,14 +531,17 @@ if [ -d "/opt/keyhelp/php" ]; then
     done
 fi
 
-# 9. Debian / Ubuntu / HestiaCP / VestaCP Versioned System PHP (/usr/bin/php5.*, /usr/bin/php7.*, /usr/bin/php8.*)
-for sys_ver in /usr/bin/php[578].[0-9]*; do
-    if [ -x "$sys_ver" ]; then
+# 9. Debian / Ubuntu / HestiaCP / VestaCP / CentOS Versioned System PHP
+#    Matches both /usr/bin/php7.4 (Debian/Ubuntu/Sury) and /usr/bin/php74 (CentOS/RHEL/Remi)
+for sys_ver in /usr/bin/php[578].[0-9]* /usr/bin/php[578][0-9]; do
+    if [ -x "$sys_ver" ] && [ ! -d "$sys_ver" ]; then
         v_suffix=$(basename "$sys_ver" | sed 's/^php//')
         cli_bin="$sys_ver"
         cgi_bin="/usr/bin/php-cgi${v_suffix}"
+        [ ! -x "$cgi_bin" ] && cgi_bin="/usr/bin/php${v_suffix}-cgi"
         fpm_bin="/usr/sbin/php-fpm${v_suffix}"
-        audit_php "System / Sury PHP ${v_suffix}" "$cli_bin" "$cgi_bin" "$fpm_bin" ""
+        [ ! -x "$fpm_bin" ] && fpm_bin="/usr/sbin/php${v_suffix}-fpm"
+        audit_php "System / Repo PHP ${v_suffix}" "$cli_bin" "$cgi_bin" "$fpm_bin" ""
     fi
 done
 
