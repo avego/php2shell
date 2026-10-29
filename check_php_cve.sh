@@ -78,23 +78,27 @@ audit_php() {
     local cli_protected=0
     local cgi_protected=0
     local fpm_protected=0
+    local cgi_exists=0
+    local fpm_exists=0
     local check_type=""
 
     if [ "$major_ver" = "5" ]; then
-        check_type="Zend Engine 2 (Delayed OOM / zend_handle_delayed_oom)"
-        # PHP 5.x check: zend_handle_delayed_oom in binary strings
-        if strings "$cli_bin" 2>/dev/null | grep -q "zend_handle_delayed_oom"; then
+        check_type="Zend Engine 2 (Delayed OOM / zend_handle_delayed_oom / zend_mm_safe_error_ex)"
+        # PHP 5.x check: zend_handle_delayed_oom (Soft Allocator) or zend_mm_safe_error_ex (Remi/Minimal/Enhanced)
+        if strings "$cli_bin" 2>/dev/null | grep -E "zend_handle_delayed_oom|zend_mm_safe_error_ex" >/dev/null 2>&1; then
             cli_protected=1
         fi
 
         if [ -n "$cgi_bin" ] && [ -x "$cgi_bin" ]; then
-            if strings "$cgi_bin" 2>/dev/null | grep -q "zend_handle_delayed_oom"; then
+            cgi_exists=1
+            if strings "$cgi_bin" 2>/dev/null | grep -E "zend_handle_delayed_oom|zend_mm_safe_error_ex" >/dev/null 2>&1; then
                 cgi_protected=1
             fi
         fi
 
         if [ -n "$fpm_bin" ] && [ -x "$fpm_bin" ]; then
-            if strings "$fpm_bin" 2>/dev/null | grep -q "zend_handle_delayed_oom"; then
+            fpm_exists=1
+            if strings "$fpm_bin" 2>/dev/null | grep -E "zend_handle_delayed_oom|zend_mm_safe_error_ex" >/dev/null 2>&1; then
                 fpm_protected=1
             fi
         fi
@@ -108,6 +112,7 @@ audit_php() {
 
         # Check CGI binary
         if [ -n "$cgi_bin" ] && [ -x "$cgi_bin" ]; then
+            cgi_exists=1
             if "$cgi_bin" -i 2>/dev/null | grep -i "memory_hard_limit_percent" >/dev/null 2>&1 || \
                strings "$cgi_bin" 2>/dev/null | grep -E "memory_hard_limit_percent|zend_mm_safe_error_ex" >/dev/null 2>&1; then
                 cgi_protected=1
@@ -116,6 +121,7 @@ audit_php() {
 
         # Check FPM binary
         if [ -n "$fpm_bin" ] && [ -x "$fpm_bin" ]; then
+            fpm_exists=1
             if strings "$fpm_bin" 2>/dev/null | grep -E "memory_hard_limit_percent|zend_mm_safe_error_ex" >/dev/null 2>&1; then
                 fpm_protected=1
             fi
@@ -139,7 +145,7 @@ audit_php() {
     fi
 
     # Print CGI Status if exists
-    if [ -n "$cgi_bin" ] && [ -f "$cgi_bin" ]; then
+    if [ "$cgi_exists" -eq 1 ]; then
         if [ "$cgi_protected" -eq 1 ]; then
             echo -e "  ├─ CGI (${cgi_bin}): ${GREEN}${BOLD}✔ PROTECTED${NC}"
         else
@@ -148,7 +154,7 @@ audit_php() {
     fi
 
     # Print FPM Status if exists
-    if [ -n "$fpm_bin" ] && [ -f "$fpm_bin" ]; then
+    if [ "$fpm_exists" -eq 1 ]; then
         if [ "$fpm_protected" -eq 1 ]; then
             echo -e "  ├─ FPM (${fpm_bin}): ${GREEN}${BOLD}✔ PROTECTED${NC}"
         else
@@ -156,8 +162,13 @@ audit_php() {
         fi
     fi
 
-    # Overall verdict
-    if [ "$cli_protected" -eq 1 ]; then
+    # Overall verdict: require ALL existing SAPI binaries (CLI, CGI, FPM) to be protected
+    local all_protected=1
+    [ "$cli_protected" -eq 0 ] && all_protected=0
+    [ "$cgi_exists" -eq 1 ] && [ "$cgi_protected" -eq 0 ] && all_protected=0
+    [ "$fpm_exists" -eq 1 ] && [ "$fpm_protected" -eq 0 ] && all_protected=0
+
+    if [ "$all_protected" -eq 1 ]; then
         echo -e "  └─ Verdict: ${GREEN}${BOLD}[SAFE / PATCHED]${NC}\n"
         TOTAL_PROTECTED=$((TOTAL_PROTECTED + 1))
     else
