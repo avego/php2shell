@@ -182,8 +182,8 @@ audit_php() {
     fi
 }
 
-# 1. Scan FastPanel Custom PHP installations (/opt/php*)
-for php_dir in /opt/php[0-9]* /opt/fphp; do
+# 1. Scan FastPanel Custom PHP installations (/opt/php* and /opt/fphp*)
+for php_dir in /opt/php[0-9]* /opt/fphp*; do
     if [ -d "$php_dir" ]; then
         label=$(basename "$php_dir")
         cli_bin="${php_dir}/bin/php"
