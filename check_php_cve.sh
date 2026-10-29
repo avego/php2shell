@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # FastPanel & System PHP Security Audit Script
+# Version: 1.1 (Updated: 2026-10-29)
 # Checks PHP installations against CVE-2026-109618 and CVE-2026-109619
 # Supports: Debian/Ubuntu, FastPanel (/opt/php*, /opt/fphp), and System PHP
 # ==============================================================================
 
 set -u
+
+SCRIPT_VERSION="1.1"
+SCRIPT_DATE="2026-10-29"
 
 # Colors for terminal output
 RED='\033[0;31m'
@@ -33,6 +37,7 @@ is_already_processed() {
 
 echo -e "${BOLD}${CYAN}====================================================================${NC}"
 echo -e "${BOLD}${CYAN}   FastPanel & Debian System PHP Security Audit (CVE-2026-109618/19)${NC}"
+echo -e "${BOLD}${CYAN}   Scanner Version: v${SCRIPT_VERSION} (${SCRIPT_DATE})${NC}"
 echo -e "${BOLD}${CYAN}====================================================================${NC}\n"
 
 # Verify required tools
