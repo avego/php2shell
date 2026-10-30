@@ -1,10 +1,24 @@
-# Universal PHP2Shell Security Scanner & Soft-OOM Patches (CVE-2026-109618, CVE-2026-109619 & CVE-2026-115560)
+<div align="center">
 
-> 🌐 **Language / Язык:** [**English (Default)**](README.md) | **Русский**
+# 🛡️ Универсальный сканер безопасности PHP и патчи EOL (PHP 5.2–8.1)
 
-Репозиторий содержит:
-1. **Универсальный строго Read-Only сканер безопасности `check_php_cve.sh` (v1.3)** для аудита любых Linux-серверов и панелей управления хостингом (**FastPanel, ISPmanager, aaPanel/Baota, HestiaCP, VestaCP, Plesk, cPanel/EasyApache, CloudLinux alt-php, DirectAdmin, CyberPanel/OpenLiteSpeed, BrainyCP, KeyHelp, Remi/RHSCL**, а также системных сборок Debian/Ubuntu/RHEL/Alpine/Arch).
-2. **Полные архитектурные бэкпорты патчей безопасности `Soft-OOM` (PHP 5.2 – 8.1)** и пошаговые руководства по нативной компиляции с 100% сохранением ABI-совместимости модулей **FastPanel** и поддержкой **OpenSSL 1.1+ (`ssl://`, `tls://`)**.
+### Комплексная защита от уязвимостей CVE-2026-109618, CVE-2026-109619 и CVE-2026-115560 («PHP2Shell»)
+
+[![Language: English](https://img.shields.io/badge/Language-English%20(Default)-007ec6?style=for-the-badge)](README.md)
+[![Language: Russian](https://img.shields.io/badge/%D0%AF%D0%B7%D1%8B%D0%BA-%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B0%D1%8F%20%D0%B4%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%D1%86%D0%B8%D1%8F-2ea44f?style=for-the-badge)](README.ru.md)
+
+[![PHP Versions](https://img.shields.io/badge/PHP-5.2%20to%208.1%20EOL-777bb4?style=flat-square&logo=php&logoColor=white)](#)
+[![Scanner Version](https://img.shields.io/badge/Scanner-v1.3%20(Strictly%20Read--Only)-brightgreen?style=flat-square)](#)
+[![Architecture](https://img.shields.io/badge/Patch%20Architecture-Full%20Soft--OOM-blue?style=flat-square)](#)
+[![Dependencies](https://img.shields.io/badge/Dependencies-Zero%20(Pure%20Bash)-orange?style=flat-square)](#)
+[![License: MIT](https://img.shields.io/badge/License-MIT-007ec6?style=flat-square)](#)
+
+[![Panels](https://img.shields.io/badge/Panels-FastPanel%20%7C%20ISPmanager%20%7C%20cPanel%20%7C%20Plesk%20%7C%20aaPanel%20%7C%20HestiaCP%20%7C%20DirectAdmin%20%7C%20CloudLinux-4c1?style=flat-square)](#)
+
+</div>
+
+Профессиональный, **строго Read-Only (без единой записи на диск)** инструментарий аудита безопасности и коллекция нативных бэкпортов патчей **Soft-OOM** для критических уязвимостей ядра Zend Engine во **всех EOL-версиях PHP (от 5.2 до 8.1)**.  
+В то время как разработчики PHP Group выпустили обновления только для активных веток (`8.2.35+`, `8.3.36+`, `8.4.27+`, `8.5.12+`), данный репозиторий предоставляет **универсальный сканер (`check_php_cve.sh` v1.3)** для любого Linux-окружения и **полные архитектурные патчи Soft-OOM** со 100% сохранением ABI-совместимости модулей **FastPanel** и поддержкой транспортов **OpenSSL 1.1+ (`ssl://`, `tls://`)**.
 
 ---
 
