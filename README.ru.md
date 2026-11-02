@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🛡️ Универсальный сканер безопасности PHP и патчи EOL (PHP 5.2–8.1)
+# 🛡️ Универсальный сканер безопасности PHP и полные патчи EOL (PHP 5.2–8.1)
 
 ### Комплексная защита от уязвимостей CVE-2026-109618, CVE-2026-109619 и CVE-2026-115560 («PHP2Shell»)
 
@@ -11,14 +11,29 @@
 [![Scanner Version](https://img.shields.io/badge/Scanner-v1.4%20(Strictly%20Read--Only)-brightgreen?style=flat-square)](#)
 [![Patch Architecture](https://img.shields.io/badge/Patch%20Architecture-Full%20Soft--OOM%20(Not%20Minimal)-blue?style=flat-square)](#)
 [![Dependencies](https://img.shields.io/badge/Dependencies-Zero%20(Pure%20Bash)-orange?style=flat-square)](#)
-[![License: MIT](https://img.shields.io/badge/License-MIT-007ec6?style=flat-square)](#)
 
 [![Panels](https://img.shields.io/badge/Panels-FastPanel%20%7C%20ISPmanager%20%7C%20cPanel%20%7C%20Plesk%20%7C%20aaPanel%20%7C%20BrainyCP%20%7C%20CWP%20%7C%20RunCloud%20%7C%20HestiaCP%20%7C%20DirectAdmin%20%7C%20CloudLinux-4c1?style=flat-square)](#)
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-007ec6?style=flat-square)](LICENSE)
+
 </div>
 
-Профессиональный, **строго Read-Only (без единой записи на диск)** инструментарий аудита безопасности и коллекция нативных бэкпортов патчей **Soft-OOM** для критических уязвимостей ядра Zend Engine во **всех EOL-версиях PHP (от 5.2 до 8.1)**.  
-В то время как разработчики PHP Group выпустили обновления только для активных веток (`8.2.35+`, `8.3.36+`, `8.4.27+`, `8.5.12+`), данный репозиторий предоставляет **универсальный сканер (`check_php_cve.sh` v1.4)** для любого Linux-окружения и **полные архитектурные патчи Soft-OOM** со 100% сохранением ABI-совместимости модулей **FastPanel** и поддержкой транспортов **OpenSSL 1.1+ (`ssl://`, `tls://`)**.
+## 📌 О проекте и предыстория
+
+В конце октября 2026 года в ядре PHP была раскрыта цепочка критических уязвимостей (обобщённо названная **«PHP2Shell»**), позволяющая осуществить удалённое выполнение произвольного кода (**RCE**) через специально сформированные HTTP-запросы multipart/form-data и исчерпание лимита оперативной памяти (memory_limit).
+
+Официальная группа разработчиков PHP Group выпустила исправления **только для актуальных веток** (8.2.35+, 8.3.36+, 8.4.27+, 8.5.12+), оставив все устаревшие ветки (**PHP 5.2 – 8.1**) полностью без официальных обновлений безопасности. Подавляющее большинство вендоров панелей управления хостингом и репозиториев либо затянули с реакцией, либо выпустили «минимальные отсекающие заплатки», которые приводят к падению воркеров по SIGKILL (502 Bad Gateway).
+
+### Что представляет собой этот репозиторий:
+
+1. 🌍 **Универсальные ПОЛНЫЕ патчи безопасности (PHP 5.2 — 8.1):**  
+   Это **не урезанные минимальные заплатки**, а **полноценные архитектурные патчи двухфазного Soft-OOM аллокатора** для C-ядра Zend Engine. Патчи платформо-независимы: они подходят для любого Linux-дистрибутива (Debian, Ubuntu, AlmaLinux, Rocky, CentOS), любой панели управления (FastPanel, ISPmanager, cPanel, Plesk, HestiaCP, DirectAdmin и др.) или изолированных Docker-контейнеров.
+2. 🔍 **Универсальный Read-Only сканер (check_php_cve.sh v1.4):**  
+   Абсолютно безопасный скрипт без единой операции записи на диск. Находит любые бинарники PHP в системе (включая активные процессы в /proc) и безошибочно различает уязвимые версии, минимальные вендорские заплатки (Zero-1 / Minimal Panic) и полноценную защиту (Full Soft-OOM).
+3. 🔬 **Академический технический аудит каждого патча:**  
+   Все 12 версий PHP (от 8.1 до 5.2) прошли пофайловый аудит C-кода, проверку наложения на чистые дистрибутивы PHP и верификацию сохранения бинарного ABI структур zend_globals.h.
+4. 🛠️ **Боевой практический кейс автора (Reference Implementation):**  
+   Автор проекта пропатчил свои рабочие серверы **ещё до появления официальных обновлений от разработчиков FastPanel**. Поскольку продакшен-инфраструктура автора построена на связке **Debian 11 (Bullseye) + FastPanel**, в репозитории представлены **проверенные в бою пошаговые инструкции, скрипты сборки deb-пакетов и готовые бинарные сборки** для этого стека как эталонный практический пример развёртывания.
 
 ---
 
@@ -220,6 +235,14 @@ systemctl restart fp2-phpXX-fpm 2>/dev/null || systemctl restart phpXX-fpm 2>/de
 | **PHP 5.4** | Zend Engine 2.4 | [php-5.4.45-*.patch](patch/php-5.4.45-cve-2026-109618-109619.patch) | Чисто (100%) | [Русский](analysis/PHP-5.4-PATCH-ANALYSIS.md) / [English](analysis/PHP-5.4-PATCH-ANALYSIS.en.md) |
 | **PHP 5.3** | Zend Engine 2.3 | [php-5.3.29-*.patch](patch/php-5.3.29-cve-2026-109618-109619.patch) | Чисто (100%) | [Русский](analysis/PHP-5.3-PATCH-ANALYSIS.md) / [English](analysis/PHP-5.3-PATCH-ANALYSIS.en.md) |
 | **PHP 5.2** | Zend Engine 2.2 | [php-5.2.17-*.patch](patch/php-5.2.17-cve-2026-109618-109619.patch) | Чисто (100%) | [Русский](analysis/PHP-5.2-PATCH-ANALYSIS.md) / [English](analysis/PHP-5.2-PATCH-ANALYSIS.en.md) |
+
+## 📄 Лицензия
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-007ec6?style=for-the-badge)](LICENSE)
+
+Проект распространяется под свободной лицензией [MIT](LICENSE).
+
+---
 
 ## 👥 Благодарности и авторство (Credits & Provenance)
 

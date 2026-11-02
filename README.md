@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🛡️ Universal PHP Security Audit Scanner & EOL Patches (PHP 5.2–8.1)
+# 🛡️ Universal PHP Security Audit Scanner & Full EOL Patches (PHP 5.2–8.1)
 
 ### Comprehensive Protection Against CVE-2026-109618, CVE-2026-109619 & CVE-2026-115560 ("PHP2Shell")
 
@@ -11,9 +11,10 @@
 [![Scanner Version](https://img.shields.io/badge/Scanner-v1.4%20(Strictly%20Read--Only)-brightgreen?style=flat-square)](#)
 [![Patch Architecture](https://img.shields.io/badge/Patch%20Architecture-Full%20Soft--OOM%20(Not%20Minimal)-blue?style=flat-square)](#)
 [![Dependencies](https://img.shields.io/badge/Dependencies-Zero%20(Pure%20Bash)-orange?style=flat-square)](#)
-[![License: MIT](https://img.shields.io/badge/License-MIT-007ec6?style=flat-square)](#)
 
 [![Panels](https://img.shields.io/badge/Panels-FastPanel%20%7C%20ISPmanager%20%7C%20cPanel%20%7C%20Plesk%20%7C%20aaPanel%20%7C%20BrainyCP%20%7C%20CWP%20%7C%20RunCloud%20%7C%20HestiaCP%20%7C%20DirectAdmin%20%7C%20CloudLinux-4c1?style=flat-square)](#)
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-007ec6?style=flat-square)](LICENSE)
 
 </div>
 
@@ -103,7 +104,7 @@ Several control panel vendors (such as ISPmanager in `isp-php54..81` and FastPan
 
 ---
 
-## 📊 Tested PHP Versions & Patching Manuals
+## 🛠️ Author Case Study: Deployment on Debian 11 & FastPanel
 
 | PHP Version | Target Environment | Protection Architecture | Status | Step-by-Step Guide (RU) |
 |---|---|---|---|---|
@@ -129,6 +130,7 @@ Several control panel vendors (such as ISPmanager in `isp-php54..81` and FastPan
 │   ├── php-5.2.17-cve-2026-109618-109619.patch
 │   ├── php-5.3.29-cve-2026-109618-109619.patch
 │   ├── php-5.4.45-cve-2026-109618-109619.patch
+│   ├── php-5.5.38-cve-2026-109618-109619.patch
 │   ├── php-5.6.40-cve-2026-109618-109619.patch
 │   ├── php-7.0.33-cve-2026-109618-109619.patch
 │   ├── php-7.1.33-cve-2026-109618-109619.patch
@@ -139,12 +141,16 @@ Several control panel vendors (such as ISPmanager in `isp-php54..81` and FastPan
 │   ├── php-8.0.30-cve-2026-109618-109619.patch
 │   ├── php-8.1.29-cve-2026-109618-109619.patch
 │   └── php-8.1.34-cve-2026-109618-109619.patch
-├── FASTPANEL_PHP5.6_PATCHING_MANUAL.md                        # Compilation guide: FastPanel /opt/php56 (RU)
-├── FASTPANEL_PHP7.1_PATCHING_MANUAL.md                        # Compilation guide: FastPanel /opt/php71 (RU)
-├── FASTPANEL_FPHP7.3_PATCHING_MANUAL.md                       # Compilation guide: FastPanel /opt/fphp (RU)
-├── FASTPANEL_PHP7.4_DEBIAN11_MANUAL.md                        # Compilation guide: Debian 11 native .deb (RU)
-├── FASTPANEL_PHP8.1_PATCHING_MANUAL.md                        # Compilation guide: FastPanel /opt/php81 (RU)
-├── check_php_cve.sh                                           # Universal Read-Only Security Scanner v1.3
+├── analysis/                                                  # Academic technical audit reports (RU & EN)
+│   ├── PHP-5.2-PATCH-ANALYSIS.md / .en.md
+│   ├── ...
+│   └── PHP-8.1-PATCH-ANALYSIS.md / .en.md
+├── FASTPANEL_PHP5.6_PATCHING_MANUAL.md                        # Reference deployment guide: FastPanel /opt/php56 (RU)
+├── FASTPANEL_PHP7.1_PATCHING_MANUAL.md                        # Reference deployment guide: FastPanel /opt/php71 (RU)
+├── FASTPANEL_FPHP7.3_PATCHING_MANUAL.md                       # Reference deployment guide: FastPanel /opt/fphp (RU)
+├── FASTPANEL_PHP7.4_DEBIAN11_MANUAL.md                        # Reference deployment guide: Debian 11 native .deb (RU)
+├── FASTPANEL_PHP8.1_PATCHING_MANUAL.md                        # Reference deployment guide: FastPanel /opt/php81 (RU)
+├── check_php_cve.sh                                           # Universal Read-Only Security Scanner v1.4
 ├── README.md                                                  # English documentation (Default)
 └── README.ru.md                                               # Russian documentation (На русском языке)
 ```
@@ -234,6 +240,14 @@ Each patch has undergone a rigorous academic audit, dry-run testing against pris
 | **PHP 5.4** | Zend Engine 2.4 | [php-5.4.45-*.patch](patch/php-5.4.45-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-5.4-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-5.4-PATCH-ANALYSIS.md) |
 | **PHP 5.3** | Zend Engine 2.3 | [php-5.3.29-*.patch](patch/php-5.3.29-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-5.3-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-5.3-PATCH-ANALYSIS.md) |
 | **PHP 5.2** | Zend Engine 2.2 | [php-5.2.17-*.patch](patch/php-5.2.17-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-5.2-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-5.2-PATCH-ANALYSIS.md) |
+
+## 📄 License
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-007ec6?style=for-the-badge)](LICENSE)
+
+This project is open-source software licensed under the [MIT License](LICENSE).
+
+---
 
 ## 👥 Credits & Provenance
 
