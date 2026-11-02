@@ -9,7 +9,7 @@
 
 [![PHP Versions](https://img.shields.io/badge/PHP-5.2%20to%208.1%20EOL-777bb4?style=flat-square&logo=php&logoColor=white)](#)
 [![Scanner Version](https://img.shields.io/badge/Scanner-v1.4%20(Strictly%20Read--Only)-brightgreen?style=flat-square)](#)
-[![Architecture](https://img.shields.io/badge/Patch%20Architecture-Full%20Soft--OOM-blue?style=flat-square)](#)
+[![Patch Architecture](https://img.shields.io/badge/Patch%20Architecture-Full%20Soft--OOM%20(Not%20Minimal)-blue?style=flat-square)](#)
 [![Dependencies](https://img.shields.io/badge/Dependencies-Zero%20(Pure%20Bash)-orange?style=flat-square)](#)
 [![License: MIT](https://img.shields.io/badge/License-MIT-007ec6?style=flat-square)](#)
 
@@ -17,8 +17,22 @@
 
 </div>
 
-A production-grade, **strictly read-only (zero-disk-write)** security audit toolkit and collection of native **Soft-OOM** backported patches for critical Zend Engine vulnerabilities affecting **all EOL PHP versions (5.2 through 8.1)**.  
-While upstream PHP Group only addressed active branches (`8.2.35+`, `8.3.36+`, `8.4.27+`, `8.5.12+`), this repository provides an **all-in-one universal scanner (`check_php_cve.sh` v1.4)** for any Linux hosting environment and **full architectural Soft-OOM patches** with 100% **FastPanel** module ABI compatibility and **OpenSSL 1.1+ (`ssl://`, `tls://`)** stream transport support.
+## 📌 Project Overview & Context
+
+In late October 2026, a critical vulnerability chain (collectively termed **"PHP2Shell"**) was disclosed in the PHP core, enabling Remote Code Execution (**RCE**) via specially crafted multipart/form-data HTTP requests and memory exhaustion (memory_limit).
+
+Upstream PHP Group officially patched **only active branches** (8.2.35+, 8.3.36+, 8.4.27+, 8.5.12+), leaving all End-of-Life branches (**PHP 5.2 through 8.1**) completely unsupported. Most hosting control panel vendors and Linux repository maintainers either delayed their response or rolled out "minimal crash-early mitigations" that terminate PHP-FPM workers with SIGKILL (502 Bad Gateway).
+
+### What this repository delivers:
+
+1. 🌍 **Universal FULL Security Patches (PHP 5.2 — 8.1):**  
+   These are **not stripped-down minimal mitigations**, but **complete architectural backports of the two-tier Soft-OOM allocator** into the Zend Engine C core. The patches are completely OS- and panel-agnostic: they work seamlessly across any Linux distribution (Debian, Ubuntu, AlmaLinux, Rocky, CentOS), control panel (FastPanel, ISPmanager, cPanel, Plesk, HestiaCP, DirectAdmin), or Docker containers.
+2. 🔍 **Universal Read-Only Scanner (check_php_cve.sh v1.4):**  
+   A strictly non-intrusive audit tool with zero disk writes. It scans the filesystem and running Linux processes (/proc) to identify active PHP SAPIs and reliably distinguishes vulnerable binaries, vendor minimal panics (Zero-1 / Minimal Panic), and full protection (Full Soft-OOM).
+3. 🔬 **Academic Technical Audits for Every Patch:**  
+   All 12 PHP versions (from 8.1 down to 5.2) feature line-by-line C source audit reports, verification against pristine official php.net source tarballs, and proof of preserved binary ABI offsets in zend_globals.h.
+4. 🛠️ **Author's Production Case Study (Reference Implementation):**  
+   The project author secured his own production servers **well before official vendor patches were released**. Because the author's production stack runs on **Debian 11 (Bullseye) and FastPanel**, this repository provides **battle-tested step-by-step guides, deb packaging scripts, and compiled binaries** for this environment as a concrete reference implementation.
 
 ---
 

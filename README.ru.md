@@ -9,7 +9,7 @@
 
 [![PHP Versions](https://img.shields.io/badge/PHP-5.2%20to%208.1%20EOL-777bb4?style=flat-square&logo=php&logoColor=white)](#)
 [![Scanner Version](https://img.shields.io/badge/Scanner-v1.4%20(Strictly%20Read--Only)-brightgreen?style=flat-square)](#)
-[![Architecture](https://img.shields.io/badge/Patch%20Architecture-Full%20Soft--OOM-blue?style=flat-square)](#)
+[![Patch Architecture](https://img.shields.io/badge/Patch%20Architecture-Full%20Soft--OOM%20(Not%20Minimal)-blue?style=flat-square)](#)
 [![Dependencies](https://img.shields.io/badge/Dependencies-Zero%20(Pure%20Bash)-orange?style=flat-square)](#)
 [![License: MIT](https://img.shields.io/badge/License-MIT-007ec6?style=flat-square)](#)
 
@@ -89,7 +89,7 @@ curl -sSL "https://raw.githubusercontent.com/avego/php2shell/main/check_php_cve.
 
 ---
 
-## 📊 Матрица протестированных версий и руководств (FastPanel & Debian 11)
+## 🛠️ Практический кейс автора: Развёртывание на Debian 11 & FastPanel
 
 | Версия PHP | Расположение | Архитектура защиты | Статус | Пошаговое руководство |
 |---|---|---|---|---|
