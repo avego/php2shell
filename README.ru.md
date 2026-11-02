@@ -104,16 +104,19 @@ curl -sSL "https://raw.githubusercontent.com/avego/php2shell/main/check_php_cve.
 
 ---
 
-## 🛠️ Практический кейс автора: Развёртывание на Debian 11 & FastPanel
+## 🛠️ Протестированные версии PHP и мануалы (Кейс автора: Debian 11 & FastPanel)
+
+> 💡 **Эталонный боевой стенд автора (Debian 11 & FastPanel):**  
+> Сами патчи и сканер в этом проекте **абсолютно универсальны** и подходят для любых дистрибутивов Linux, любых панелей управления (ISPmanager, cPanel, Plesk, HestiaCP и др.) и Docker-контейнеров. Однако приведенные ниже пошаговые руководства отражают **реальный боевой опыт автора по развёртыванию на Debian 11 (Bullseye) и FastPanel**, где автор защитил свои продакшен-серверы ещё до выхода официальных патчей от разработчиков FastPanel. Вы можете использовать их напрямую для FastPanel/Debian 11 или как проверенный образец для адаптации под вашу панель.
 
 | Версия PHP | Расположение | Архитектура защиты | Статус | Пошаговое руководство |
 |---|---|---|---|---|
 | **PHP 5.2.17 – 5.4.45** | Исходники / Панели | Бэкпорт Zend Engine 2 (`zend_handle_delayed_oom`) | ✅ Патчи в `patch/` | Универсальные `.patch` |
-| **PHP 5.6.40** | FastPanel `/opt/php56` | Бэкпорт Zend Engine 2 (`zend_handle_delayed_oom`) + OpenSSL 1.1 | ✅ Защищён | [Мануал PHP 5.6](FASTPANEL_PHP5.6_PATCHING_MANUAL.md) |
-| **PHP 7.0.33 – 7.3.33** | FastPanel `/opt/php71` и др. | Бэкпорт Zend Engine 3 (`memory_hard_limit_percent`) | ✅ Защищён | [Мануал PHP 7.1](FASTPANEL_PHP7.1_PATCHING_MANUAL.md) |
-| **PHP 7.3.33 (`fphp`)** | FastPanel `/opt/fphp` | Внутренний PHP самой панели (`fastpanel2-apps`) | ✅ Защищён | [Мануал fphp 7.3](FASTPANEL_FPHP7.3_PATCHING_MANUAL.md) |
-| **PHP 7.4.33** | Системный Debian 11 | Нативные `.deb` пакеты (`dpkg-buildpackage`) | ✅ Защищён | [Мануал PHP 7.4 Debian](FASTPANEL_PHP7.4_DEBIAN11_MANUAL.md) |
-| **PHP 8.0.30 – 8.1.34** | FastPanel `/opt/php81` | Бэкпорт Zend Engine 4 (`memory_hard_limit_percent` + OPcache fix) | ✅ Защищён | [Мануал PHP 8.1](FASTPANEL_PHP8.1_PATCHING_MANUAL.md) |
+| **PHP 5.6.40** | FastPanel `/opt/php56` | Бэкпорт Zend Engine 2 (`zend_handle_delayed_oom`) + OpenSSL 1.1 | ✅ Защищён | [Мануал PHP 5.6](manuals/FASTPANEL_PHP5.6_PATCHING_MANUAL.md) |
+| **PHP 7.0.33 – 7.3.33** | FastPanel `/opt/php71` и др. | Бэкпорт Zend Engine 3 (`memory_hard_limit_percent`) | ✅ Защищён | [Мануал PHP 7.1](manuals/FASTPANEL_PHP7.1_PATCHING_MANUAL.md) |
+| **PHP 7.3.33 (`fphp`)** | FastPanel `/opt/fphp` | Внутренний PHP самой панели (`fastpanel2-apps`) | ✅ Защищён | [Мануал fphp 7.3](manuals/FASTPANEL_FPHP7.3_PATCHING_MANUAL.md) |
+| **PHP 7.4.33** | Системный Debian 11 | Нативные `.deb` пакеты (`dpkg-buildpackage`) | ✅ Защищён | [Мануал PHP 7.4 Debian](manuals/FASTPANEL_PHP7.4_DEBIAN11_MANUAL.md) |
+| **PHP 8.0.30 – 8.1.34** | FastPanel `/opt/php81` | Бэкпорт Zend Engine 4 (`memory_hard_limit_percent` + OPcache fix) | ✅ Защищён | [Мануал PHP 8.1](manuals/FASTPANEL_PHP8.1_PATCHING_MANUAL.md) |
 | **PHP 8.2.35+ / 8.3.36+ / 8.4.27+ / 8.5.12+** | FastPanel `/opt/php84`, `/opt/php85` | Официальный апстрим PHP Group (`Soft-OOM`) | ✅ Защищён из коробки | Встроен в официальный релиз |
 
 ---
@@ -140,12 +143,17 @@ curl -sSL "https://raw.githubusercontent.com/avego/php2shell/main/check_php_cve.
 │   ├── php-8.0.30-cve-2026-109618-109619.patch
 │   ├── php-8.1.29-cve-2026-109618-109619.patch
 │   └── php-8.1.34-cve-2026-109618-109619.patch
-├── FASTPANEL_PHP5.6_PATCHING_MANUAL.md                        # Инструкция: FastPanel /opt/php56
-├── FASTPANEL_PHP7.1_PATCHING_MANUAL.md                        # Инструкция: FastPanel /opt/php71
-├── FASTPANEL_FPHP7.3_PATCHING_MANUAL.md                       # Инструкция: FastPanel /opt/fphp (панель)
-├── FASTPANEL_PHP7.4_DEBIAN11_MANUAL.md                        # Инструкция: Debian 11 нативные deb
-├── FASTPANEL_PHP8.1_PATCHING_MANUAL.md                        # Инструкция: FastPanel /opt/php81
-├── check_php_cve.sh                                           # Универсальный Read-Only сканер безопасности v1.3
+├── manuals/                                                   # Эталонные мануалы автора (FastPanel & Debian 11)
+│   ├── FASTPANEL_PHP5.6_PATCHING_MANUAL.md                    # Инструкция: FastPanel /opt/php56
+│   ├── FASTPANEL_PHP7.1_PATCHING_MANUAL.md                    # Инструкция: FastPanel /opt/php71
+│   ├── FASTPANEL_FPHP7.3_PATCHING_MANUAL.md                   # Инструкция: FastPanel /opt/fphp (панель)
+│   ├── FASTPANEL_PHP7.4_DEBIAN11_MANUAL.md                    # Инструкция: Debian 11 нативные deb
+│   └── FASTPANEL_PHP8.1_PATCHING_MANUAL.md                    # Инструкция: FastPanel /opt/php81
+├── analysis/                                                  # Отчёты академического технического аудита (RU и EN)
+│   ├── PHP-5.2-PATCH-ANALYSIS.md / .en.md
+│   ├── ...
+│   └── PHP-8.1-PATCH-ANALYSIS.md / .en.md
+├── check_php_cve.sh                                           # Универсальный Read-Only сканер безопасности v1.4
 ├── README.md                                                  # Документация на английском (по умолчанию)
 └── README.ru.md                                               # Документация на русском языке
 ```

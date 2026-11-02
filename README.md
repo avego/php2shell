@@ -104,16 +104,19 @@ Several control panel vendors (such as ISPmanager in `isp-php54..81` and FastPan
 
 ---
 
-## 🛠️ Author Case Study: Deployment on Debian 11 & FastPanel
+## 🛠️ Tested PHP Versions & Deployment Manuals (Author Case Study: Debian 11 & FastPanel)
+
+> 💡 **Author's Reference Environment (Debian 11 & FastPanel):**  
+> While the patches and scanner in this repository are **100% universal** for any Linux distribution, control panel (ISPmanager, cPanel, Plesk, etc.), and Docker, the specific manuals below document the **author's battle-tested production environment (Debian 11 Bullseye + FastPanel)**. The author patched these PHP versions on his live servers before official vendor updates became available. Use these manuals directly for FastPanel/Debian 11 or as a verified template for other environments.
 
 | PHP Version | Target Environment | Protection Architecture | Status | Step-by-Step Guide (RU) |
 |---|---|---|---|---|
 | **PHP 5.2.17 – 5.4.45** | Source / Hosting Panels | Zend Engine 2 Backport (`zend_handle_delayed_oom`) | ✅ Patches in `patch/` | Universal `.patch` files |
-| **PHP 5.6.40** | FastPanel `/opt/php56` | Zend Engine 2 Backport (`zend_handle_delayed_oom`) + OpenSSL 1.1 | ✅ Protected | [PHP 5.6 Manual](FASTPANEL_PHP5.6_PATCHING_MANUAL.md) |
-| **PHP 7.0.33 – 7.3.33** | FastPanel `/opt/php71`, etc. | Zend Engine 3 Backport (`memory_hard_limit_percent`) | ✅ Protected | [PHP 7.1 Manual](FASTPANEL_PHP7.1_PATCHING_MANUAL.md) |
-| **PHP 7.3.33 (`fphp`)** | FastPanel `/opt/fphp` | Internal FastPanel Panel Engine (`fastpanel2-apps`) | ✅ Protected | [fphp 7.3 Manual](FASTPANEL_FPHP7.3_PATCHING_MANUAL.md) |
-| **PHP 7.4.33** | Debian 11 System PHP | Native `.deb` Packages (`dpkg-buildpackage`) | ✅ Protected | [Debian 11 PHP 7.4 Manual](FASTPANEL_PHP7.4_DEBIAN11_MANUAL.md) |
-| **PHP 8.0.30 – 8.1.34** | FastPanel `/opt/php81` | Zend Engine 4 Backport (`memory_hard_limit_percent` + OPcache fix) | ✅ Protected | [PHP 8.1 Manual](FASTPANEL_PHP8.1_PATCHING_MANUAL.md) |
+| **PHP 5.6.40** | FastPanel `/opt/php56` | Zend Engine 2 Backport (`zend_handle_delayed_oom`) + OpenSSL 1.1 | ✅ Protected | [PHP 5.6 Manual](manuals/FASTPANEL_PHP5.6_PATCHING_MANUAL.md) |
+| **PHP 7.0.33 – 7.3.33** | FastPanel `/opt/php71`, etc. | Zend Engine 3 Backport (`memory_hard_limit_percent`) | ✅ Protected | [PHP 7.1 Manual](manuals/FASTPANEL_PHP7.1_PATCHING_MANUAL.md) |
+| **PHP 7.3.33 (`fphp`)** | FastPanel `/opt/fphp` | Internal FastPanel Panel Engine (`fastpanel2-apps`) | ✅ Protected | [fphp 7.3 Manual](manuals/FASTPANEL_FPHP7.3_PATCHING_MANUAL.md) |
+| **PHP 7.4.33** | Debian 11 System PHP | Native `.deb` Packages (`dpkg-buildpackage`) | ✅ Protected | [Debian 11 PHP 7.4 Manual](manuals/FASTPANEL_PHP7.4_DEBIAN11_MANUAL.md) |
+| **PHP 8.0.30 – 8.1.34** | FastPanel `/opt/php81` | Zend Engine 4 Backport (`memory_hard_limit_percent` + OPcache fix) | ✅ Protected | [PHP 8.1 Manual](manuals/FASTPANEL_PHP8.1_PATCHING_MANUAL.md) |
 | **PHP 8.2.35+ / 8.3.36+ / 8.4.27+ / 8.5.12+** | FastPanel `/opt/php84`, `/opt/php85` | Official Upstream PHP Group Release (`Soft-OOM`) | ✅ Safe Upstream | Built into official release |
 
 ---
@@ -145,11 +148,12 @@ Several control panel vendors (such as ISPmanager in `isp-php54..81` and FastPan
 │   ├── PHP-5.2-PATCH-ANALYSIS.md / .en.md
 │   ├── ...
 │   └── PHP-8.1-PATCH-ANALYSIS.md / .en.md
-├── FASTPANEL_PHP5.6_PATCHING_MANUAL.md                        # Reference deployment guide: FastPanel /opt/php56 (RU)
-├── FASTPANEL_PHP7.1_PATCHING_MANUAL.md                        # Reference deployment guide: FastPanel /opt/php71 (RU)
-├── FASTPANEL_FPHP7.3_PATCHING_MANUAL.md                       # Reference deployment guide: FastPanel /opt/fphp (RU)
-├── FASTPANEL_PHP7.4_DEBIAN11_MANUAL.md                        # Reference deployment guide: Debian 11 native .deb (RU)
-├── FASTPANEL_PHP8.1_PATCHING_MANUAL.md                        # Reference deployment guide: FastPanel /opt/php81 (RU)
+├── manuals/                                                   # Reference deployment guides (FastPanel & Debian 11)
+│   ├── FASTPANEL_PHP5.6_PATCHING_MANUAL.md                    # Compilation guide: FastPanel /opt/php56 (RU)
+│   ├── FASTPANEL_PHP7.1_PATCHING_MANUAL.md                    # Compilation guide: FastPanel /opt/php71 (RU)
+│   ├── FASTPANEL_FPHP7.3_PATCHING_MANUAL.md                   # Compilation guide: FastPanel /opt/fphp (RU)
+│   ├── FASTPANEL_PHP7.4_DEBIAN11_MANUAL.md                    # Compilation guide: Debian 11 native .deb (RU)
+│   └── FASTPANEL_PHP8.1_PATCHING_MANUAL.md                    # Compilation guide: FastPanel /opt/php81 (RU)
 ├── check_php_cve.sh                                           # Universal Read-Only Security Scanner v1.4
 ├── README.md                                                  # English documentation (Default)
 └── README.ru.md                                               # Russian documentation (На русском языке)
