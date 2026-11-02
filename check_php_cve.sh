@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # Universal Hosting Control Panel & System PHP Security Audit Script
-# Version: 1.3 (Updated: 2026-10-30) — strictly READ-ONLY (zero disk writes)
+# Version: 1.4 (Updated: 2026-11-02) — strictly READ-ONLY (zero disk writes)
 # Checks PHP installations against CVE-2026-109618, CVE-2026-109619 & CVE-2026-115560
 # + Audits surviving session gaps (Zero 1: upload_progress + serialize_handler)
 # Supports:
 #   - Local Audit: FastPanel, ISPmanager, aaPanel/Baota, HestiaCP, VestaCP, Plesk,
-#                  cPanel/EasyApache, CloudLinux alt-php, DirectAdmin, CyberPanel/OLS,
-#                  BrainyCP, KeyHelp, Remi/RHSCL, and Debian/Ubuntu/RHEL/Alpine/Arch PHP
+#                  cPanel/EasyApache 4, CloudLinux alt-php & alt-php-fpm, DirectAdmin,
+#                  CyberPanel/OpenLiteSpeed, BrainyCP, KeyHelp, CWP (Control WebPanel),
+#                  RunCloud, CloudPanel, ISPConfig, Froxlor, Remi/RHSCL, Live /proc SAPI,
+#                  and Debian/Ubuntu/RHEL/Alpine/Arch PHP
 #   - Remote Audit: --url <https://example.com> (in-memory HTTP header & multipart probe)
 #   - CI/CD Output: --json (structured JSON output)
 #   - Deep Scan   : --all (filesystem search for custom PHP builds)
@@ -15,8 +17,8 @@
 
 set -u
 
-SCRIPT_VERSION="1.3"
-SCRIPT_DATE="2026-10-30"
+SCRIPT_VERSION="1.4"
+SCRIPT_DATE="2026-11-02"
 REPO_URL="https://github.com/avego/php2shell"
 
 # CLI Options (strictly read-only)
@@ -362,11 +364,23 @@ detect_control_panels() {
     if [ -d "/usr/local/CyberCP" ]; then
         panels+=("CyberPanel (/usr/local/lsws/lsphp*)")
     fi
-    if [ -d "/usr/local/brainycp" ]; then
-        panels+=("BrainyCP")
+    if [ -d "/usr/local/brainycp" ] || [ -d "/etc/brainy" ]; then
+        panels+=("BrainyCP (/usr/bin/php*, /usr/local/brainycp)")
     fi
     if [ -d "/opt/keyhelp" ]; then
         panels+=("KeyHelp (/opt/keyhelp/php)")
+    fi
+    if [ -d "/usr/local/cwpsrv" ] || [ -d "/usr/local/cwp" ]; then
+        panels+=("CWP / Control WebPanel (/usr/local/cwp/php*, /opt/alt/php*)")
+    fi
+    if [ -d "/RunCloud/Packages" ]; then
+        panels+=("RunCloud (/RunCloud/Packages/php*rc)")
+    fi
+    if [ -d "/home/clp" ] || [ -f "/etc/cloudpanel/cloudpanel.db" ]; then
+        panels+=("CloudPanel (/usr/bin/php*)")
+    fi
+    if [ -d "/usr/local/ispconfig" ]; then
+        panels+=("ISPConfig (/usr/bin/php*)")
     fi
     if [ -d "/opt/remi" ] || [ -d "/opt/rh" ]; then
         panels+=("Remi / RedHat SCL (/opt/remi/php*, /opt/rh/rh-php*)")
@@ -375,8 +389,12 @@ detect_control_panels() {
     if [ ${#panels[@]} -eq 0 ]; then
         echo "None (Standard OS / Distribution)"
     else
-        local IFS=" + "
-        echo "${panels[*]}"
+        local out="" p
+        for p in "${panels[@]}"; do
+            [ -n "$out" ] && out="${out} + "
+            out="${out}${p}"
+        done
+        echo "$out"
     fi
 }
 
@@ -750,12 +768,12 @@ if [ -d "/opt/plesk/php" ]; then
                 "${php_dir}/bin/php" \
                 "${php_dir}/bin/php-cgi" \
                 "${php_dir}/sbin/php-fpm" \
-                ""
+                "${php_dir}/bin/lsphp"
         fi
     done
 fi
 
-# 4. cPanel / EasyApache 4 (/opt/cpanel/ea-php*)
+# 4. cPanel / EasyApache 4 (/opt/cpanel/ea-php* & internal 3rdparty PHP)
 if [ -d "/opt/cpanel" ]; then
     for php_dir in /opt/cpanel/ea-php*; do
         if [ -d "$php_dir" ] && [ -x "${php_dir}/root/usr/bin/php" ]; then
@@ -764,6 +782,18 @@ if [ -d "/opt/cpanel" ]; then
                 "${php_dir}/root/usr/bin/php" \
                 "${php_dir}/root/usr/bin/php-cgi" \
                 "${php_dir}/root/usr/sbin/php-fpm" \
+                "${php_dir}/root/usr/bin/lsphp"
+        fi
+    done
+fi
+if [ -d "/usr/local/cpanel/3rdparty/php" ]; then
+    for php_dir in /usr/local/cpanel/3rdparty/php/*; do
+        if [ -d "$php_dir" ] && [ -x "${php_dir}/bin/php" ]; then
+            label=$(basename "$php_dir")
+            audit_php "cPanel Internal PHP ${label}" \
+                "${php_dir}/bin/php" \
+                "${php_dir}/bin/php-cgi" \
+                "${php_dir}/sbin/php-fpm" \
                 ""
         fi
     done
@@ -777,25 +807,30 @@ for scl_base in /opt/remi/php* /opt/rh/rh-php*; do
             "${scl_base}/root/usr/bin/php" \
             "${scl_base}/root/usr/bin/php-cgi" \
             "${scl_base}/root/usr/sbin/php-fpm" \
-            ""
+            "${scl_base}/root/usr/bin/lsphp"
     fi
 done
 
-# 5b. CloudLinux alt-php (/opt/alt/php*)
+# 5b. CloudLinux alt-php (/opt/alt/php*, /opt/alt/php-fpm*, /opt/alt/php-internal)
 if [ -d "/opt/alt" ]; then
-    for php_dir in /opt/alt/php[0-9]*; do
+    for php_dir in /opt/alt/php[0-9]* /opt/alt/php-internal*; do
         if [ -d "$php_dir" ] && [ -x "${php_dir}/usr/bin/php" ]; then
             label=$(basename "$php_dir")
+            ver_num="${label#php}"
+            fpm_candidate="${php_dir}/usr/sbin/php-fpm"
+            if [ ! -x "$fpm_candidate" ] && [ -x "/opt/alt/php-fpm${ver_num}/usr/sbin/php-fpm" ]; then
+                fpm_candidate="/opt/alt/php-fpm${ver_num}/usr/sbin/php-fpm"
+            fi
             audit_php "CloudLinux alt-${label}" \
                 "${php_dir}/usr/bin/php" \
                 "${php_dir}/usr/bin/php-cgi" \
-                "${php_dir}/usr/sbin/php-fpm" \
+                "$fpm_candidate" \
                 "${php_dir}/usr/bin/lsphp"
         fi
     done
 fi
 
-# 6. DirectAdmin (/usr/local/php*)
+# 6. DirectAdmin (/usr/local/php*) & CWP (/usr/local/cwp/php*, /usr/local/php)
 for php_dir in /usr/local/php[0-9]*; do
     if [ -d "$php_dir" ] && [ -x "${php_dir}/bin/php" ]; then
         label=$(basename "$php_dir")
@@ -806,6 +841,25 @@ for php_dir in /usr/local/php[0-9]*; do
             "${php_dir}/bin/lsphp"
     fi
 done
+if [ -d "/usr/local/cwp" ]; then
+    for php_dir in /usr/local/cwp/php*; do
+        if [ -d "$php_dir" ] && [ -x "${php_dir}/bin/php" ]; then
+            label=$(basename "$php_dir")
+            audit_php "CWP ${label}" \
+                "${php_dir}/bin/php" \
+                "${php_dir}/bin/php-cgi" \
+                "${php_dir}/sbin/php-fpm" \
+                "${php_dir}/bin/lsphp"
+        fi
+    done
+fi
+if [ -d "/usr/local/php" ] && [ -x "/usr/local/php/bin/php" ]; then
+    audit_php "CWP / Custom PHP (/usr/local/php)" \
+        "/usr/local/php/bin/php" \
+        "/usr/local/php/bin/php-cgi" \
+        "/usr/local/php/sbin/php-fpm" \
+        "/usr/local/php/bin/lsphp"
+fi
 
 # 7. CyberPanel / OpenLiteSpeed (/usr/local/lsws/lsphp*)
 if [ -d "/usr/local/lsws" ]; then
@@ -835,9 +889,51 @@ if [ -d "/opt/keyhelp/php" ]; then
     done
 fi
 
-# 9. HestiaCP / VestaCP / Ondrej Sury PPA / Debian / Ubuntu / RHEL versioned binaries
+# 8b. BrainyCP (/usr/bin/php[0-9]*/bin/php and internal /usr/local/brainycp/src/compiled/php5)
+for php_dir in /usr/bin/php[578][0-9]; do
+    if [ -d "$php_dir" ] && [ -x "${php_dir}/bin/php" ]; then
+        label=$(basename "$php_dir")
+        fpm_candidate="${php_dir}/bin/php-fpm"
+        [ ! -x "$fpm_candidate" ] && fpm_candidate="${php_dir}/sbin/php-fpm"
+        audit_php "BrainyCP ${label}" \
+            "${php_dir}/bin/php" \
+            "${php_dir}/bin/php-cgi" \
+            "$fpm_candidate" \
+            ""
+    fi
+done
+if [ -d "/usr/local/brainycp/src/compiled" ]; then
+    for php_dir in /usr/local/brainycp/src/compiled/php*; do
+        if [ -d "$php_dir" ] && [ -x "${php_dir}/bin/php" ]; then
+            label=$(basename "$php_dir")
+            fpm_candidate="${php_dir}/bin/php-fpm"
+            [ ! -x "$fpm_candidate" ] && fpm_candidate="${php_dir}/sbin/php-fpm"
+            audit_php "BrainyCP Internal (${label})" \
+                "${php_dir}/bin/php" \
+                "${php_dir}/bin/php-cgi" \
+                "$fpm_candidate" \
+                ""
+        fi
+    done
+fi
+
+# 8c. RunCloud (/RunCloud/Packages/php*rc)
+if [ -d "/RunCloud/Packages" ]; then
+    for php_dir in /RunCloud/Packages/php*rc; do
+        if [ -d "$php_dir" ] && [ -x "${php_dir}/bin/php" ]; then
+            label=$(basename "$php_dir")
+            audit_php "RunCloud ${label}" \
+                "${php_dir}/bin/php" \
+                "${php_dir}/bin/php-cgi" \
+                "${php_dir}/sbin/php-fpm" \
+                "${php_dir}/bin/lsphp"
+        fi
+    done
+fi
+
+# 9. HestiaCP / VestaCP / CloudPanel / ISPConfig / Ondrej Sury PPA / Debian / Ubuntu / RHEL versioned binaries
 for cli_bin in /usr/bin/php[578].[0-9] /usr/bin/php[578][0-9]; do
-    if [ -x "$cli_bin" ]; then
+    if [ -f "$cli_bin" ] && [ -x "$cli_bin" ]; then
         v_suffix="${cli_bin#/usr/bin/php}"
         cgi_bin="/usr/bin/php-cgi${v_suffix}"
         [ ! -x "$cgi_bin" ] && cgi_bin="/usr/bin/php${v_suffix}-cgi"
@@ -848,11 +944,36 @@ for cli_bin in /usr/bin/php[578].[0-9] /usr/bin/php[578][0-9]; do
 done
 
 # 10. Default System PHP (/usr/bin/php, /usr/local/bin/php)
-if [ -x "/usr/bin/php" ]; then
+if [ -f "/usr/bin/php" ] && [ -x "/usr/bin/php" ]; then
     audit_php "Default System PHP (/usr/bin/php)" "/usr/bin/php" "/usr/bin/php-cgi" "/usr/sbin/php-fpm" ""
 fi
-if [ -x "/usr/local/bin/php" ]; then
+if [ -f "/usr/local/bin/php" ] && [ -x "/usr/local/bin/php" ]; then
     audit_php "Local Build PHP (/usr/local/bin/php)" "/usr/local/bin/php" "/usr/local/bin/php-cgi" "/usr/local/sbin/php-fpm" ""
+fi
+
+# 10b. Live Process Discovery via /proc/<pid>/exe (catches any running non-standard PHP-FPM / CGI / LSPHP)
+if [ -d "/proc" ]; then
+    for pid_exe in /proc/[0-9]*/exe; do
+        exe_target=$(readlink -f "$pid_exe" 2>/dev/null || true)
+        [ -z "$exe_target" ] && continue
+        exe_target="${exe_target% (deleted)}"
+        [ ! -f "$exe_target" ] || [ ! -x "$exe_target" ] && continue
+        exe_base=$(basename "$exe_target")
+        case "$exe_base" in
+            php-fpm*|php-cgi*|lsphp*)
+                exe_root=$(dirname "$(dirname "$exe_target")")
+                if [ -x "${exe_root}/bin/php" ]; then
+                    fpm_cand="${exe_root}/sbin/php-fpm"
+                    [ ! -x "$fpm_cand" ] && [ -x "${exe_root}/bin/php-fpm" ] && fpm_cand="${exe_root}/bin/php-fpm"
+                    audit_php "Live Process PHP (${exe_root})" \
+                        "${exe_root}/bin/php" \
+                        "${exe_root}/bin/php-cgi" \
+                        "$fpm_cand" \
+                        "${exe_root}/bin/lsphp"
+                fi
+                ;;
+        esac
+    done
 fi
 
 # 11. Deep scan (--all) for custom paths
@@ -860,12 +981,14 @@ if [ "$OPT_ALL" -eq 1 ]; then
     while IFS= read -r custom_cli; do
         [ -z "$custom_cli" ] && continue
         custom_dir=$(dirname "$(dirname "$custom_cli")")
+        fpm_cand="${custom_dir}/sbin/php-fpm"
+        [ ! -x "$fpm_cand" ] && [ -x "${custom_dir}/bin/php-fpm" ] && fpm_cand="${custom_dir}/bin/php-fpm"
         audit_php "Custom PHP (${custom_cli})" \
             "$custom_cli" \
             "${custom_dir}/bin/php-cgi" \
-            "${custom_dir}/sbin/php-fpm" \
+            "$fpm_cand" \
             "${custom_dir}/bin/lsphp"
-    done < <(find /opt /www /usr/local /home /var /usr/src -maxdepth 5 -type f -name "php" -perm -111 2>/dev/null || true)
+    done < <(find /opt /www /usr/local /home /var /usr/src /RunCloud -maxdepth 5 -type f -name "php" -perm -111 2>/dev/null || true)
 fi
 
 # ==============================================================================

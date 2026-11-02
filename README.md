@@ -8,17 +8,17 @@
 [![Language: Russian](https://img.shields.io/badge/%D0%AF%D0%B7%D1%8B%D0%BA-%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B0%D1%8F%20%D0%B4%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%D1%86%D0%B8%D1%8F-007ec6?style=for-the-badge)](README.ru.md)
 
 [![PHP Versions](https://img.shields.io/badge/PHP-5.2%20to%208.1%20EOL-777bb4?style=flat-square&logo=php&logoColor=white)](#)
-[![Scanner Version](https://img.shields.io/badge/Scanner-v1.3%20(Strictly%20Read--Only)-brightgreen?style=flat-square)](#)
+[![Scanner Version](https://img.shields.io/badge/Scanner-v1.4%20(Strictly%20Read--Only)-brightgreen?style=flat-square)](#)
 [![Architecture](https://img.shields.io/badge/Patch%20Architecture-Full%20Soft--OOM-blue?style=flat-square)](#)
 [![Dependencies](https://img.shields.io/badge/Dependencies-Zero%20(Pure%20Bash)-orange?style=flat-square)](#)
 [![License: MIT](https://img.shields.io/badge/License-MIT-007ec6?style=flat-square)](#)
 
-[![Panels](https://img.shields.io/badge/Panels-FastPanel%20%7C%20ISPmanager%20%7C%20cPanel%20%7C%20Plesk%20%7C%20aaPanel%20%7C%20HestiaCP%20%7C%20DirectAdmin%20%7C%20CloudLinux-4c1?style=flat-square)](#)
+[![Panels](https://img.shields.io/badge/Panels-FastPanel%20%7C%20ISPmanager%20%7C%20cPanel%20%7C%20Plesk%20%7C%20aaPanel%20%7C%20BrainyCP%20%7C%20CWP%20%7C%20RunCloud%20%7C%20HestiaCP%20%7C%20DirectAdmin%20%7C%20CloudLinux-4c1?style=flat-square)](#)
 
 </div>
 
 A production-grade, **strictly read-only (zero-disk-write)** security audit toolkit and collection of native **Soft-OOM** backported patches for critical Zend Engine vulnerabilities affecting **all EOL PHP versions (5.2 through 8.1)**.  
-While upstream PHP Group only addressed active branches (`8.2.35+`, `8.3.36+`, `8.4.27+`, `8.5.12+`), this repository provides an **all-in-one universal scanner (`check_php_cve.sh` v1.3)** for any Linux hosting environment and **full architectural Soft-OOM patches** with 100% **FastPanel** module ABI compatibility and **OpenSSL 1.1+ (`ssl://`, `tls://`)** stream transport support.
+While upstream PHP Group only addressed active branches (`8.2.35+`, `8.3.36+`, `8.4.27+`, `8.5.12+`), this repository provides an **all-in-one universal scanner (`check_php_cve.sh` v1.4)** for any Linux hosting environment and **full architectural Soft-OOM patches** with 100% **FastPanel** module ABI compatibility and **OpenSSL 1.1+ (`ssl://`, `tls://`)** stream transport support.
 
 ---
 
@@ -35,7 +35,7 @@ The upstream PHP Group officially fixed these vulnerabilities only in active bra
 
 ---
 
-## 🚀 Universal Read-Only Server Audit (`check_php_cve.sh` v1.3)
+## 🚀 Universal Read-Only Server Audit (`check_php_cve.sh` v1.4)
 
 The scanner operates in **strictly Read-Only mode (`Zero Disk Writes`)**: it never modifies `php.ini`, never installs system packages, and never creates temporary files on disk (even remote HTTP probes execute 100% in memory).
 
@@ -64,7 +64,7 @@ Several third-party `PHP2Shell` scanners suffer from critical methodological fla
 
 ### Architectural Comparison:
 
-| Audit Criterion / Mechanism | Other Third-Party Scanners | `check_php_cve.sh` (v1.3) |
+| Audit Criterion / Mechanism | Other Third-Party Scanners | `check_php_cve.sh` (v1.4) |
 |---|---|---|
 | **ELF Binary Signature Purity (Zero False Positives)** | ❌ Match `"Actual POST length does not match Content-Length"` (present in `main/SAPI.c` since **2004** in every unpatched PHP build!) or `max_multipart_body_parts` (introduced in **February 2023** for `CVE-2023-0662` in PHP 8.0.28 / 8.1.16, present in unpatched PHP 8.0.30 & 8.1.29). | ✅ Matches **exclusively October 2026 Zend Engine patch symbols** that never existed prior to the 2026 security patches: `zend_handle_delayed_oom` (Zend 2), `memory_hard_limit_percent` (Zend 3/4), `zend_mm_safe_error_ex`, `__PHP_Incomplete_Class_Serialized`. **False-positive rate = 0%.** |
 | **Patch Architecture Classification (`Soft-OOM` vs `Minimal` vs `Partial`)** | ⚠️ Collapse any string match into a generic `"Patched"` label or misclassify EOL PHP 5.x/7.x backports. | ✅ Distinguishes 4 exact patch tiers:<br>1. **`Full Soft-OOM Patch`** (delayed OOM, FPM worker survives, `shutdown` functions run safely);<br>2. **`Enhanced Patch`** (`_exit(1)` on OOM + `incomplete_classes_only`);<br>3. **`Minimal Vendor Patch`** (abrupt `_exit(1)` inside allocator killing FPM workers with `502 Bad Gateway` + stripped `upload_progress`);<br>4. **`Partial Patch`** (`rfc1867`/`session` modified, but `ZendMM` allocator remains **UNPATCHED**!). |
@@ -72,7 +72,7 @@ Several third-party `PHP2Shell` scanners suffer from critical methodological fla
 | **Deep `session.upload_progress` & `Zero 1` Session Audit** | ⚠️ Only check `ini_get('session.upload_progress.enabled')` and mislead admins into thinking `Off` makes an unpatched binary safe (ignoring that `CVE-2026-109618` triggers via ordinary POST/GET OOM without `upload_progress`). | ✅ Distinguishes 5 exact states:<br>• `N/A in PHP 5.2/5.3` (feature added in 5.4);<br>• `HARD-DISABLED in binary (\|\| 1)` (dead-code eliminated at compile time in vendor `minimal` patches);<br>• `ENABLED & ISOLATED` (protected via `__PHP_Incomplete_Class_Serialized`);<br>• `DISABLED in php.ini` (mitigates `CVE-2026-115560` & `Zero 1`, while explicitly flagging the binary as **`[UNPATCHED BINARY]`** because OOM RCE remains exposed!);<br>• Reports active `session.serialize_handler` (`php` / `php_serialize`). |
 | **OpenSSL Stream Transport Verification (`ssl://` & `tls://`)** | ❌ Not checked (recompiling legacy PHP 5.x/7.x on modern Linux distros frequently silently breaks HTTPS/cURL/SMTP due to OpenSSL 1.1/3.0 mismatches). | ✅ Actively verifies `stream_get_transports()` on every PHP runtime to ensure `ssl://` and `tls://` transports are operational. |
 | **Strict `100% Read-Only` Guarantee** | ⚠️ May mutate production configs or write temporary files to `/tmp`. | ✅ **Strictly `Read-Only`:** zero disk writes, zero `mktemp` files, zero package installations. Works even without `binutils` (automatic fallback from `strings` to `grep -a`). |
-| **Control Panel Discovery** | 5–6 basic paths (`aaPanel`, `Hestia`, `Plesk`, `cPanel`, `Remi`). | **13+ Control Panels & Repositories:** `FastPanel` (including internal `/opt/fphp`), `ISPmanager`, `aaPanel/Baota`, `Plesk`, `cPanel/EA4`, `CloudLinux alt-php`, `DirectAdmin`, `CyberPanel/OpenLiteSpeed`, `HestiaCP`, `VestaCP`, `BrainyCP`, `KeyHelp`, `Remi/RHSCL`, and system PHP. |
+| **Control Panel & Live Process Discovery** | 5–6 basic paths (`aaPanel`, `Hestia`, `Plesk`, `cPanel`, `Remi`). | **17+ Control Panels, Repositories & Live `/proc/<pid>/exe` SAPI Discovery:** `FastPanel` (including `/opt/fphp`), `ISPmanager`, `aaPanel/Baota`, `Plesk` (incl. `lsphp`), `cPanel/EA4` (incl. `lsphp` & internal `3rdparty/php`), `CloudLinux` (`alt-php`, `alt-php-fpm`, `alt-php-internal`), `DirectAdmin`, `CyberPanel/OpenLiteSpeed`, `BrainyCP` (`/usr/bin/phpXX/bin/*` & internal `compiled/php5`), `CWP (Control WebPanel)`, `RunCloud` (`/RunCloud/Packages/php*rc`), `KeyHelp`, `HestiaCP`, `VestaCP`, `CloudPanel`, `ISPConfig`, `Remi/RHSCL`, system PHP, plus automatic detection of any running non-standard `php-fpm`/`php-cgi`/`lsphp` process via `/proc`. |
 
 ---
 

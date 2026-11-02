@@ -8,17 +8,17 @@
 [![Language: Russian](https://img.shields.io/badge/%D0%AF%D0%B7%D1%8B%D0%BA-%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B0%D1%8F%20%D0%B4%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%D1%86%D0%B8%D1%8F-2ea44f?style=for-the-badge)](README.ru.md)
 
 [![PHP Versions](https://img.shields.io/badge/PHP-5.2%20to%208.1%20EOL-777bb4?style=flat-square&logo=php&logoColor=white)](#)
-[![Scanner Version](https://img.shields.io/badge/Scanner-v1.3%20(Strictly%20Read--Only)-brightgreen?style=flat-square)](#)
+[![Scanner Version](https://img.shields.io/badge/Scanner-v1.4%20(Strictly%20Read--Only)-brightgreen?style=flat-square)](#)
 [![Architecture](https://img.shields.io/badge/Patch%20Architecture-Full%20Soft--OOM-blue?style=flat-square)](#)
 [![Dependencies](https://img.shields.io/badge/Dependencies-Zero%20(Pure%20Bash)-orange?style=flat-square)](#)
 [![License: MIT](https://img.shields.io/badge/License-MIT-007ec6?style=flat-square)](#)
 
-[![Panels](https://img.shields.io/badge/Panels-FastPanel%20%7C%20ISPmanager%20%7C%20cPanel%20%7C%20Plesk%20%7C%20aaPanel%20%7C%20HestiaCP%20%7C%20DirectAdmin%20%7C%20CloudLinux-4c1?style=flat-square)](#)
+[![Panels](https://img.shields.io/badge/Panels-FastPanel%20%7C%20ISPmanager%20%7C%20cPanel%20%7C%20Plesk%20%7C%20aaPanel%20%7C%20BrainyCP%20%7C%20CWP%20%7C%20RunCloud%20%7C%20HestiaCP%20%7C%20DirectAdmin%20%7C%20CloudLinux-4c1?style=flat-square)](#)
 
 </div>
 
 Профессиональный, **строго Read-Only (без единой записи на диск)** инструментарий аудита безопасности и коллекция нативных бэкпортов патчей **Soft-OOM** для критических уязвимостей ядра Zend Engine во **всех EOL-версиях PHP (от 5.2 до 8.1)**.  
-В то время как разработчики PHP Group выпустили обновления только для активных веток (`8.2.35+`, `8.3.36+`, `8.4.27+`, `8.5.12+`), данный репозиторий предоставляет **универсальный сканер (`check_php_cve.sh` v1.3)** для любого Linux-окружения и **полные архитектурные патчи Soft-OOM** со 100% сохранением ABI-совместимости модулей **FastPanel** и поддержкой транспортов **OpenSSL 1.1+ (`ssl://`, `tls://`)**.
+В то время как разработчики PHP Group выпустили обновления только для активных веток (`8.2.35+`, `8.3.36+`, `8.4.27+`, `8.5.12+`), данный репозиторий предоставляет **универсальный сканер (`check_php_cve.sh` v1.4)** для любого Linux-окружения и **полные архитектурные патчи Soft-OOM** со 100% сохранением ABI-совместимости модулей **FastPanel** и поддержкой транспортов **OpenSSL 1.1+ (`ssl://`, `tls://`)**.
 
 ---
 
@@ -35,7 +35,7 @@ Upstream PHP Group официально выпустила исправлени�
 
 ---
 
-## 🚀 Универсальный Read-Only аудит сервера (`check_php_cve.sh` v1.3)
+## 🚀 Универсальный Read-Only аудит сервера (`check_php_cve.sh` v1.4)
 
 Скрипт работает **строго в режиме чтения (`Zero Disk Writes`)**: не изменяет `php.ini`, не устанавливает пакеты в систему и не создаёт ни одного временного файла на диске (даже сетевые проверки выполняются полностью в оперативной памяти).
 
@@ -64,7 +64,7 @@ curl -sSL "https://raw.githubusercontent.com/avego/php2shell/main/check_php_cve.
 
 ### Ключевые архитектурные отличия нашего сканера:
 
-| Критерий / Механизм проверки | Сторонние сканеры (конкуренты) | Наш сканер `check_php_cve.sh` (v1.3) |
+| Критерий / Механизм проверки | Сторонние сканеры (конкуренты) | Наш сканер `check_php_cve.sh` (v1.4) |
 |---|---|---|
 | **Чистота сигнатур ELF-бинарников (защита от False Positives)** | ❌ Ищут строку `"Actual POST length does not match Content-Length"` (существует в `main/SAPI.c` с **2004 года** в каждом непатченном PHP!) или директиву `max_multipart_body_parts` (добавлена в **феврале 2023 года** для `CVE-2023-0662` в PHP 8.0.28 / 8.1.16, присутствует в уязвимых PHP 8.0.30 и 8.1.29). | ✅ Использует **исключительно символы ядра октября 2026 года**, которых физически не существовало ни в одной сборке PHP до выхода патчей: `zend_handle_delayed_oom` (Zend 2), `memory_hard_limit_percent` (Zend 3/4), `zend_mm_safe_error_ex`, `__PHP_Incomplete_Class_Serialized`. **Вероятность ложноположительного срабатывания = 0%.** |
 | **Различение архитектуры патча (`Soft-OOM` vs `Minimal` vs `Partial`)** | ⚠️ Сваливают любые совпадения в общий статус «Patched» или путаются на EOL-ветках PHP 5.x/7.x. | ✅ Чётко классифицирует 4 типа патчей:<br>1. **`Full Soft-OOM Patch`** (отложенный OOM, воркер PHP-FPM остаётся жив, `shutdown`-функции работают безопасно);<br>2. **`Enhanced Patch`** (`_exit(1)` при OOM + `incomplete_classes_only`);<br>3. **`Minimal Vendor Patch`** (аварийный `_exit(1)` из аллокатора, убивающий воркер FPM с `502 Bad Gateway`, + вырезанный `upload_progress`);<br>4. **`Partial Patch`** (затронут только `rfc1867`/`session`, но аллокатор `ZendMM` остался уязвим!). |
@@ -72,7 +72,7 @@ curl -sSL "https://raw.githubusercontent.com/avego/php2shell/main/check_php_cve.
 | **Глубокий аудит `session.upload_progress` и `Zero 1`** | ⚠️ Проверяют только `ini_get('session.upload_progress.enabled')` и ошибочно помечают непатченный бинарник с `Off` как «безопасный» (забывая, что `CVE-2026-109618` пробивается без `upload_progress` обычным POST/GET OOM). | ✅ Различает 5 состояний:<br>• `N/A in PHP 5.2/5.3` (механизм появился в 5.4);<br>• `HARD-DISABLED in binary (\|\| 1)` (код мёртво вырезан компилятором в `minimal`-патчах ISPmanager/FastPanel);<br>• `ENABLED & ISOLATED` (защищён через `__PHP_Incomplete_Class_Serialized`);<br>• `DISABLED in php.ini` (митигирует `CVE-2026-115560` и `Zero 1`, но бинарник помечается как **`[UNPATCHED BINARY]`**, так как OOM RCE остаётся открытым!);<br>• Выводит текущий `session.serialize_handler` (`php` / `php_serialize`). |
 | **Контроль работоспособности OpenSSL (`ssl://` и `tls://`)** | ❌ Не проверяют (после ручной пересборки старых PHP 5.x/7.x на современных ОС администраторы часто получают сломанный HTTPS/cURL/SMTP без `ssl://`). | ✅ Автоматически тестирует `stream_get_transports()` в каждой найденной версии PHP и предупреждает, если транспорты `ssl://` и `tls://` отсутствуют. |
 | **Гарантия безопасности (`100% Read-Only`)** | ⚠️ Могут модифицировать боевые конфиги или создавать временные файлы в `/tmp`. | ✅ **Строго `Read-Only`:** ноль записей на диск, ноль временных файлов (`mktemp`), ноль изменений пакетов и конфигов. Работает даже без `binutils` (автоматический фолбэк со `strings` на `grep -a`). |
-| **Охват панелей управления** | 5–6 базовых путей (`aaPanel`, `Hestia`, `Plesk`, `cPanel`, `Remi`). | **13+ панелей и репозиториев:** `FastPanel` (включая внутренний `/opt/fphp`), `ISPmanager`, `aaPanel/Baota`, `Plesk`, `cPanel/EA4`, `CloudLinux alt-php`, `DirectAdmin`, `CyberPanel/OpenLiteSpeed`, `HestiaCP`, `VestaCP`, `BrainyCP`, `KeyHelp`, `Remi/RHSCL`, системные PHP. |
+| **Охват панелей управления и живых процессов (`/proc`)** | 5–6 базовых путей (`aaPanel`, `Hestia`, `Plesk`, `cPanel`, `Remi`). | **17+ панелей, репозиториев и автопоиск живых SAPI через `/proc/<pid>/exe`:** `FastPanel` (включая `/opt/fphp`), `ISPmanager`, `aaPanel/Baota`, `Plesk` (вкл. `lsphp`), `cPanel/EA4` (вкл. `lsphp` и внутренний `3rdparty/php`), `CloudLinux` (`alt-php`, `alt-php-fpm`, `alt-php-internal`), `DirectAdmin`, `CyberPanel/OpenLiteSpeed`, `BrainyCP` (`/usr/bin/phpXX/bin/*` и внутренний `compiled/php5`), `CWP (Control WebPanel)`, `RunCloud` (`/RunCloud/Packages/php*rc`), `KeyHelp`, `HestiaCP`, `VestaCP`, `CloudPanel`, `ISPConfig`, `Remi/RHSCL`, системные PHP + автоматический перехват любых запущенных в памяти нестандартных `php-fpm`/`php-cgi`/`lsphp` через `/proc`. |
 
 ---
 
