@@ -198,6 +198,29 @@ systemctl restart fp2-phpXX-fpm 2>/dev/null || systemctl restart phpXX-fpm 2>/de
 
 ---
 
+---
+
+## 🛡️ Патчи безопасности и детальные технические аудиты
+
+В репозитории поддерживается верифицированный набор патчей безопасности, бэкпортирующих **двухуровневый Soft-OOM аллокатор** и **укрепление парсера RFC 1867 / связных списков Zend** (устраняющих CVE-2026-109618 и CVE-2026-109619) для всех устаревших версий PHP (с PHP 8.1 до PHP 5.2).
+
+Каждый патч прошёл строгий академический аудит, проверку наложения (dry-run) на чистые официальные дистрибутивы PHP и верификацию контрольных символов в исходном коде.
+
+| Ветка PHP | Архитектура ядра | Файл патча | Чистота наложения | Технический аудит |
+|:---:|:---:|:---|:---:|:---:|
+| **PHP 8.1** | Zend Engine 4.1 | [php-8.1.34-*.patch](patch/php-8.1.34-cve-2026-109618-109619.patch) <br> [php-8.1.29-*.patch](patch/php-8.1.29-cve-2026-109618-109619.patch) | Чисто (100%) | [Русский](analysis/PHP-8.1-PATCH-ANALYSIS.md) / [English](analysis/PHP-8.1-PATCH-ANALYSIS.en.md) |
+| **PHP 8.0** | Zend Engine 4.0 | [php-8.0.30-*.patch](patch/php-8.0.30-cve-2026-109618-109619.patch) | Чисто (100%) | [Русский](analysis/PHP-8.0-PATCH-ANALYSIS.md) / [English](analysis/PHP-8.0-PATCH-ANALYSIS.en.md) |
+| **PHP 7.4** | Zend Engine 3.4 | [php-7.4.33-*.patch](patch/php-7.4.33-cve-2026-109618-109619.patch) <br> [php-7.4.33-debian11-*.patch](patch/php-7.4.33-debian11-cve-2026-109618-109619.patch) | Чисто (100%) | [Русский](analysis/PHP-7.4-PATCH-ANALYSIS.md) / [English](analysis/PHP-7.4-PATCH-ANALYSIS.en.md) |
+| **PHP 7.3** | Zend Engine 3.3 | [php-7.3.33-*.patch](patch/php-7.3.33-cve-2026-109618-109619.patch) | Чисто (100%) | [Русский](analysis/PHP-7.3-PATCH-ANALYSIS.md) / [English](analysis/PHP-7.3-PATCH-ANALYSIS.en.md) |
+| **PHP 7.2** | Zend Engine 3.2 | [php-7.2.34-*.patch](patch/php-7.2.34-cve-2026-109618-109619.patch) | Чисто (100%) | [Русский](analysis/PHP-7.2-PATCH-ANALYSIS.md) / [English](analysis/PHP-7.2-PATCH-ANALYSIS.en.md) |
+| **PHP 7.1** | Zend Engine 3.1 | [php-7.1.33-*.patch](patch/php-7.1.33-cve-2026-109618-109619.patch) | Чисто (100%) | [Русский](analysis/PHP-7.1-PATCH-ANALYSIS.md) / [English](analysis/PHP-7.1-PATCH-ANALYSIS.en.md) |
+| **PHP 7.0** | Zend Engine 3.0 | [php-7.0.33-*.patch](patch/php-7.0.33-cve-2026-109618-109619.patch) | Чисто (100%) | [Русский](analysis/PHP-7.0-PATCH-ANALYSIS.md) / [English](analysis/PHP-7.0-PATCH-ANALYSIS.en.md) |
+| **PHP 5.6** | Zend Engine 2.6 | [php-5.6.40-*.patch](patch/php-5.6.40-cve-2026-109618-109619.patch) | Чисто (100%) | [Русский](analysis/PHP-5.6-PATCH-ANALYSIS.md) / [English](analysis/PHP-5.6-PATCH-ANALYSIS.en.md) |
+| **PHP 5.5** | Zend Engine 2.5 | [php-5.5.38-*.patch](patch/php-5.5.38-cve-2026-109618-109619.patch) | Чисто (100%) | [Русский](analysis/PHP-5.5-PATCH-ANALYSIS.md) / [English](analysis/PHP-5.5-PATCH-ANALYSIS.en.md) |
+| **PHP 5.4** | Zend Engine 2.4 | [php-5.4.45-*.patch](patch/php-5.4.45-cve-2026-109618-109619.patch) | Чисто (100%) | [Русский](analysis/PHP-5.4-PATCH-ANALYSIS.md) / [English](analysis/PHP-5.4-PATCH-ANALYSIS.en.md) |
+| **PHP 5.3** | Zend Engine 2.3 | [php-5.3.29-*.patch](patch/php-5.3.29-cve-2026-109618-109619.patch) | Чисто (100%) | [Русский](analysis/PHP-5.3-PATCH-ANALYSIS.md) / [English](analysis/PHP-5.3-PATCH-ANALYSIS.en.md) |
+| **PHP 5.2** | Zend Engine 2.2 | [php-5.2.17-*.patch](patch/php-5.2.17-cve-2026-109618-109619.patch) | Чисто (100%) | [Русский](analysis/PHP-5.2-PATCH-ANALYSIS.md) / [English](analysis/PHP-5.2-PATCH-ANALYSIS.en.md) |
+
 ## 👥 Благодарности и авторство (Credits & Provenance)
 
 - **Оригинальное исправление в upstream PHP (`php-src`):**
