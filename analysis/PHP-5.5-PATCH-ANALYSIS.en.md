@@ -3,7 +3,7 @@
 **Development & Audit Date:** November 2026  
 **Target Version:** PHP 5.5.38 (Final release of the PHP 5.5 branch, Zend Engine 2.5)  
 **Reference Baseline:** Upstream PHP 8.2.35 & verified backports for PHP 5.4.45 / 5.6.40  
-**Engineered Patch:** `php-5.5.38-cve-2026-109618-109619.patch` (37,175 bytes, 1,141 lines)  
+**Engineered Patch:** [`php-5.5.38-cve-2026-109618-109619.patch`](../patches/php-5.5.38-cve-2026-109618-109619.patch) (37,175 bytes, 1,141 lines)  
 **Core Architecture:** Two-tier Soft-OOM allocator architecture by Arnaud Le Blanc adapted for Zend Engine 2.5.
 
 ---

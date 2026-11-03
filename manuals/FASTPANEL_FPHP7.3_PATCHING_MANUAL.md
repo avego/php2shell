@@ -1,4 +1,4 @@
-﻿# Руководство по сборке и обновлению PHP 7.3 в FASTPANEL (/opt/fphp)
+# Руководство по сборке и обновлению PHP 7.3 в FASTPANEL (/opt/fphp)
 
 Данное руководство описывает процесс нативной сборки и обновления встроенного окружения PHP 7.3.33 для панели управления **FastPanel** (каталог `/opt/fphp`) с применением патча безопасности против критических уязвимостей **CVE-2026-109618** и **CVE-2026-109619** (повреждение состояния Zend VM при Out-Of-Memory bailout).
 
@@ -62,7 +62,7 @@ wget https://www.php.net/distributions/php-7.3.33.tar.gz
 tar -xzf php-7.3.33.tar.gz
 cd php-7.3.33
 
-curl -sSL "https://raw.githubusercontent.com/avego/php2shell/main/patch/php-7.3.33-cve-2026-109618-109619.patch" | patch -p1
+curl -sSL "https://raw.githubusercontent.com/avego/php2shell/main/patches/php-7.3.33-cve-2026-109618-109619.patch" | patch -p1
 ```
 > **Важное примечание по выводу утилиты `patch`:**
 > 

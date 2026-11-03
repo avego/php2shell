@@ -4,8 +4,8 @@
 **Target Version:** PHP 7.4.33 (Final release of the PHP 7 lineage)  
 **Reference Baseline:** Upstream PHP 8.2.35 (`01a40e89fb`)  
 **Analyzed Patches:**
-1. `php-7.4.33-cve-2026-109618-109619.patch` (295,874 bytes, 8,206 lines) — for upstream tar.gz builds
-2. `php-7.4.33-debian11-cve-2026-109618-109619.patch` (742,027 bytes, 19,860 lines) — for native Debian 11 `dpkg-buildpackage` builds  
+1. [`php-7.4.33-cve-2026-109618-109619.patch`](../patches/php-7.4.33-cve-2026-109618-109619.patch) (295,874 bytes, 8,206 lines) — for upstream tar.gz builds
+2. [`php-7.4.33-debian11-cve-2026-109618-109619.patch`](../patches/php-7.4.33-debian11-cve-2026-109618-109619.patch) (742,027 bytes, 19,860 lines) — for native Debian 11 `dpkg-buildpackage` builds  
 **Patch Origin:** Remi Collet official backports (`remicollet/php-src-security`, `PHP-7.4` branch) based on Arnaud Le Blanc's architecture.
 
 ---

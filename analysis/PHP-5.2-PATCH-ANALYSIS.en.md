@@ -3,7 +3,7 @@
 **Audit Date:** November 2026  
 **Target Version:** PHP 5.2.17 (Final release of the PHP 5.2 branch, Zend Engine 2.2)  
 **Reference Baseline:** Upstream PHP 8.2.35 (`01a40e89fb`)  
-**Analyzed Patch:** `php-5.2.17-cve-2026-109618-109619.patch` (30,168 bytes, 880 lines)  
+**Analyzed Patch:** [`php-5.2.17-cve-2026-109618-109619.patch`](../patches/php-5.2.17-cve-2026-109618-109619.patch) (30,168 bytes, 880 lines)  
 **Patch Origin:** Remi Collet official backport (`remicollet/php-src-security`, `PHP-5.2` branch) based on Arnaud Le Blanc's architecture.
 
 ---

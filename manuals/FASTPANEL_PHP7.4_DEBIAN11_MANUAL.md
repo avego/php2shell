@@ -1,4 +1,4 @@
-﻿# Руководство по сборке и обновлению PHP 7.4 (Debian 11 Bullseye / FastPanel)
+# Руководство по сборке и обновлению PHP 7.4 (Debian 11 Bullseye / FastPanel)
 
 Данное руководство описывает процесс нативной сборки и обновления системного PHP 7.4 (`php7.4-cli`, `php7.4-fpm`, `libapache2-mod-php7.4` и модулей) на **Debian 11 (Bullseye)** с применением бэкпорта безопасности против критических уязвимостей **CVE-2026-109618** и **CVE-2026-109619** (нарушение целостности памяти при OOM/bailout в ядре Zend).
 
@@ -59,7 +59,7 @@ cd /usr/src/deb-php74/php7.4-7.4.33
 
 Скачиваем адаптированный под Debian 11 патч:
 ```bash
-curl -sSL "https://raw.githubusercontent.com/avego/php2shell/main/patch/php-7.4.33-debian11-cve-2026-109618-109619.patch" -o /tmp/php74-deb11.patch
+curl -sSL "https://raw.githubusercontent.com/avego/php2shell/main/patches/php-7.4.33-debian11-cve-2026-109618-109619.patch" -o /tmp/php74-deb11.patch
 patch -p1 < /tmp/php74-deb11.patch
 rm -f /tmp/php74-deb11.patch
 ```

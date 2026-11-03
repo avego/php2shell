@@ -3,7 +3,7 @@
 **Audit Date:** November 2026  
 **Target Version:** PHP 8.0.30 (Final release of the PHP 8.0 branch)  
 **Reference Baseline:** Upstream PHP 8.2.35 (`01a40e89fb`)  
-**Analyzed Patch:** `php-8.0.30-cve-2026-109618-109619.patch` (320,679 bytes, 8,802 lines)  
+**Analyzed Patch:** [`php-8.0.30-cve-2026-109618-109619.patch`](../patches/php-8.0.30-cve-2026-109618-109619.patch) (320,679 bytes, 8,802 lines)  
 **Patch Origin:** Remi Collet official backport (`remicollet/php-src-security`, `PHP-8.0` branch) based on Arnaud Le Blanc's architecture.
 
 ---

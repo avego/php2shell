@@ -1,4 +1,4 @@
-﻿# Инструкция по пропатчиванию и пересборке PHP 8.1 в FastPanel (Debian 11 x86_64)
+# Инструкция по пропатчиванию и пересборке PHP 8.1 в FastPanel (Debian 11 x86_64)
 
 Данная инструкция описывает процесс закрытия критических уязвимостей **CVE-2026-109618** и **CVE-2026-109619** (RCE через memory_limit bailout / повреждение глобального состояния) для **PHP 8.1** в **FastPanel** с сохранением 100% совместимости с модулями FastPanel (`OPcache`, `mysqli.so`, `pdo_mysql.so`, `redis.so` и др.).
 
@@ -59,7 +59,7 @@ tar -xzf php-8.1.29.tar.gz
 cd php-8.1.29
 
 # Скачиваем патч безопасности для PHP 8.1 из репозитория avego/php2shell
-wget -O cve-8.1.patch https://raw.githubusercontent.com/avego/php2shell/main/patch/php-8.1.29-cve-2026-109618-109619.patch
+wget -O cve-8.1.patch https://raw.githubusercontent.com/avego/php2shell/main/patches/php-8.1.29-cve-2026-109618-109619.patch
 patch -p1 < cve-8.1.patch
 ```
 > **Важное примечание по выводу утилиты `patch`:**

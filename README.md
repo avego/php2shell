@@ -111,7 +111,7 @@ Several control panel vendors (such as ISPmanager in `isp-php54..81` and FastPan
 
 | PHP Version | Target Environment | Protection Architecture | Status | Step-by-Step Guide (RU) |
 |---|---|---|---|---|
-| **PHP 5.2.17 – 5.4.45** | Source / Hosting Panels | Zend Engine 2 Backport (`zend_handle_delayed_oom`) | ✅ Patches in `patch/` | Universal `.patch` files |
+| **PHP 5.2.17 – 5.4.45** | Source / Hosting Panels | Zend Engine 2 Backport (`zend_handle_delayed_oom`) | ✅ Patches in `patches/` | Universal `.patch` files |
 | **PHP 5.6.40** | FastPanel `/opt/php56` | Zend Engine 2 Backport (`zend_handle_delayed_oom`) + OpenSSL 1.1 | ✅ Protected | [PHP 5.6 Manual](manuals/FASTPANEL_PHP5.6_PATCHING_MANUAL.md) |
 | **PHP 7.0.33 – 7.3.33** | FastPanel `/opt/php71`, etc. | Zend Engine 3 Backport (`memory_hard_limit_percent`) | ✅ Protected | [PHP 7.1 Manual](manuals/FASTPANEL_PHP7.1_PATCHING_MANUAL.md) |
 | **PHP 7.3.33 (`fphp`)** | FastPanel `/opt/fphp` | Internal FastPanel Panel Engine (`fastpanel2-apps`) | ✅ Protected | [fphp 7.3 Manual](manuals/FASTPANEL_FPHP7.3_PATCHING_MANUAL.md) |
@@ -124,7 +124,7 @@ Several control panel vendors (such as ISPmanager in `isp-php54..81` and FastPan
 ## 📁 Repository Structure
 
 ```text
-├── patch/                                                     # Soft-OOM security backports & OpenSSL compatibility patches
+├── patches/                                                   # Soft-OOM security backports & OpenSSL compatibility patches
 │   ├── php56-openssl11/                                       # Adapted OpenSSL 1.1 extension sources for PHP 5.6
 │   │   ├── openssl.c
 │   │   ├── xp_ssl.c
@@ -180,7 +180,7 @@ Several control panel vendors (such as ISPmanager in `isp-php54..81` and FastPan
      --with-pdo-mysql=shared,mysqlnd \
      --with-mysql-sock=/var/run/mysqld/mysqld.sock
      ```
-     *(For PHP 5.6, also include `--with-mysql=shared,mysqlnd` and apply `patch/php-5.6-openssl-1.1.patch` for OpenSSL 1.1 compatibility).*
+     *(For PHP 5.6, also include `--with-mysql=shared,mysqlnd` and apply `patches/php-5.6-openssl-1.1.patch` for OpenSSL 1.1 compatibility).*
 
 3. **Atomic Binary Replacement (`install -m 755`):**
    Avoid `Text file busy` errors on running workers by installing binaries atomically:
@@ -232,18 +232,18 @@ Each patch has undergone a rigorous academic audit, dry-run testing against pris
 
 | PHP Branch | Architecture | Official Patch File | Patch Hygiene | In-Depth Audit Report |
 |:---:|:---:|:---|:---:|:---:|
-| **PHP 8.1** | Zend Engine 4.1 | [php-8.1.34-*.patch](patch/php-8.1.34-cve-2026-109618-109619.patch) <br> [php-8.1.29-*.patch](patch/php-8.1.29-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-8.1-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-8.1-PATCH-ANALYSIS.md) |
-| **PHP 8.0** | Zend Engine 4.0 | [php-8.0.30-*.patch](patch/php-8.0.30-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-8.0-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-8.0-PATCH-ANALYSIS.md) |
-| **PHP 7.4** | Zend Engine 3.4 | [php-7.4.33-*.patch](patch/php-7.4.33-cve-2026-109618-109619.patch) <br> [php-7.4.33-debian11-*.patch](patch/php-7.4.33-debian11-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-7.4-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-7.4-PATCH-ANALYSIS.md) |
-| **PHP 7.3** | Zend Engine 3.3 | [php-7.3.33-*.patch](patch/php-7.3.33-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-7.3-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-7.3-PATCH-ANALYSIS.md) |
-| **PHP 7.2** | Zend Engine 3.2 | [php-7.2.34-*.patch](patch/php-7.2.34-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-7.2-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-7.2-PATCH-ANALYSIS.md) |
-| **PHP 7.1** | Zend Engine 3.1 | [php-7.1.33-*.patch](patch/php-7.1.33-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-7.1-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-7.1-PATCH-ANALYSIS.md) |
-| **PHP 7.0** | Zend Engine 3.0 | [php-7.0.33-*.patch](patch/php-7.0.33-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-7.0-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-7.0-PATCH-ANALYSIS.md) |
-| **PHP 5.6** | Zend Engine 2.6 | [php-5.6.40-*.patch](patch/php-5.6.40-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-5.6-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-5.6-PATCH-ANALYSIS.md) |
-| **PHP 5.5** | Zend Engine 2.5 | [php-5.5.38-*.patch](patch/php-5.5.38-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-5.5-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-5.5-PATCH-ANALYSIS.md) |
-| **PHP 5.4** | Zend Engine 2.4 | [php-5.4.45-*.patch](patch/php-5.4.45-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-5.4-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-5.4-PATCH-ANALYSIS.md) |
-| **PHP 5.3** | Zend Engine 2.3 | [php-5.3.29-*.patch](patch/php-5.3.29-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-5.3-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-5.3-PATCH-ANALYSIS.md) |
-| **PHP 5.2** | Zend Engine 2.2 | [php-5.2.17-*.patch](patch/php-5.2.17-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-5.2-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-5.2-PATCH-ANALYSIS.md) |
+| **PHP 8.1** | Zend Engine 4.1 | [php-8.1.34-*.patch](patches/php-8.1.34-cve-2026-109618-109619.patch) <br> [php-8.1.29-*.patch](patches/php-8.1.29-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-8.1-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-8.1-PATCH-ANALYSIS.md) |
+| **PHP 8.0** | Zend Engine 4.0 | [php-8.0.30-*.patch](patches/php-8.0.30-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-8.0-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-8.0-PATCH-ANALYSIS.md) |
+| **PHP 7.4** | Zend Engine 3.4 | [php-7.4.33-*.patch](patches/php-7.4.33-cve-2026-109618-109619.patch) <br> [php-7.4.33-debian11-*.patch](patches/php-7.4.33-debian11-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-7.4-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-7.4-PATCH-ANALYSIS.md) |
+| **PHP 7.3** | Zend Engine 3.3 | [php-7.3.33-*.patch](patches/php-7.3.33-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-7.3-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-7.3-PATCH-ANALYSIS.md) |
+| **PHP 7.2** | Zend Engine 3.2 | [php-7.2.34-*.patch](patches/php-7.2.34-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-7.2-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-7.2-PATCH-ANALYSIS.md) |
+| **PHP 7.1** | Zend Engine 3.1 | [php-7.1.33-*.patch](patches/php-7.1.33-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-7.1-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-7.1-PATCH-ANALYSIS.md) |
+| **PHP 7.0** | Zend Engine 3.0 | [php-7.0.33-*.patch](patches/php-7.0.33-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-7.0-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-7.0-PATCH-ANALYSIS.md) |
+| **PHP 5.6** | Zend Engine 2.6 | [php-5.6.40-*.patch](patches/php-5.6.40-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-5.6-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-5.6-PATCH-ANALYSIS.md) |
+| **PHP 5.5** | Zend Engine 2.5 | [php-5.5.38-*.patch](patches/php-5.5.38-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-5.5-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-5.5-PATCH-ANALYSIS.md) |
+| **PHP 5.4** | Zend Engine 2.4 | [php-5.4.45-*.patch](patches/php-5.4.45-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-5.4-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-5.4-PATCH-ANALYSIS.md) |
+| **PHP 5.3** | Zend Engine 2.3 | [php-5.3.29-*.patch](patches/php-5.3.29-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-5.3-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-5.3-PATCH-ANALYSIS.md) |
+| **PHP 5.2** | Zend Engine 2.2 | [php-5.2.17-*.patch](patches/php-5.2.17-cve-2026-109618-109619.patch) | Clean (100%) | [English](analysis/PHP-5.2-PATCH-ANALYSIS.en.md) / [Русский](analysis/PHP-5.2-PATCH-ANALYSIS.md) |
 
 ## 📄 License
 

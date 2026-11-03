@@ -3,7 +3,7 @@
 **Audit Date:** November 2026  
 **Target Version:** PHP 5.3.29 (Final release of the PHP 5.3 branch, Zend Engine 2.3)  
 **Reference Baseline:** Upstream PHP 8.2.35 (`01a40e89fb`)  
-**Analyzed Patch:** `php-5.3.29-cve-2026-109618-109619.patch` (30,329 bytes, 866 lines)  
+**Analyzed Patch:** [`php-5.3.29-cve-2026-109618-109619.patch`](../patches/php-5.3.29-cve-2026-109618-109619.patch) (30,329 bytes, 866 lines)  
 **Patch Origin:** Official backport based on Arnaud Le Blanc's architecture adapted for Zend Engine 2.3.
 
 ---

@@ -3,7 +3,7 @@
 **Audit Date:** November 2026  
 **Target Version:** PHP 5.4.45 (Final release of the PHP 5.4 branch, Zend Engine 2.4)  
 **Reference Baseline:** Upstream PHP 8.2.35 (`01a40e89fb`)  
-**Analyzed Patch:** `php-5.4.45-cve-2026-109618-109619.patch` (76,652 bytes, 2,516 lines)  
+**Analyzed Patch:** [`php-5.4.45-cve-2026-109618-109619.patch`](../patches/php-5.4.45-cve-2026-109618-109619.patch) (76,652 bytes, 2,516 lines)  
 **Patch Origin:** Official backport based on Arnaud Le Blanc's architecture adapted for Zend Engine 2.
 
 ---

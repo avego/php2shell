@@ -3,7 +3,7 @@
 **Audit Date:** November 2026  
 **Target Version:** PHP 7.2.34 (Final release of the PHP 7.2 branch)  
 **Reference Baseline:** Upstream PHP 8.2.35 (`01a40e89fb`)  
-**Analyzed Patch:** `php-7.2.34-cve-2026-109618-109619.patch` (232,719 bytes, 7,070 lines)  
+**Analyzed Patch:** [`php-7.2.34-cve-2026-109618-109619.patch`](../patches/php-7.2.34-cve-2026-109618-109619.patch) (232,719 bytes, 7,070 lines)  
 **Patch Origin:** Remi Collet official backport (`remicollet/php-src-security`, `PHP-7.2` branch) based on Arnaud Le Blanc's architecture.
 
 ---

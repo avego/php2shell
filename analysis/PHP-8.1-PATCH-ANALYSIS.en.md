@@ -4,8 +4,8 @@
 **Target Versions:** PHP 8.1.34 & PHP 8.1.29  
 **Reference Baseline:** Upstream PHP 8.2.35 (`01a40e89fb`)  
 **Analyzed Patches:**
-1. `php-8.1.34-cve-2026-109618-109619.patch` (344,949 bytes, 9,622 lines)
-2. `php-8.1.29-cve-2026-109618-109619.patch` (344,528 bytes, 9,608 lines)  
+1. [`php-8.1.34-cve-2026-109618-109619.patch`](../patches/php-8.1.34-cve-2026-109618-109619.patch) (344,949 bytes, 9,622 lines)
+2. [`php-8.1.29-cve-2026-109618-109619.patch`](../patches/php-8.1.29-cve-2026-109618-109619.patch) (344,528 bytes, 9,608 lines)  
 **Patch Origin:** Remi Collet official backports (`remicollet/php-src-security`, `PHP-8.1` branch) based on Arnaud Le Blanc's architecture.
 
 ---
