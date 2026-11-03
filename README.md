@@ -14,7 +14,7 @@
 
 [![Panels](https://img.shields.io/badge/Panels-FastPanel%20%7C%20ISPmanager%20%7C%20cPanel%20%7C%20Plesk%20%7C%20aaPanel%20%7C%20BrainyCP%20%7C%20CWP%20%7C%20RunCloud%20%7C%20HestiaCP%20%7C%20DirectAdmin%20%7C%20CloudLinux-4c1?style=flat-square)](#)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-007ec6?style=flat-square)](LICENSE)
+[![License: MIT / PHP-3.01](https://img.shields.io/badge/License-MIT%20%2F%20PHP--3.01-007ec6?style=flat-square)](LICENSE)
 
 </div>
 
@@ -155,6 +155,7 @@ Several control panel vendors (such as ISPmanager in `isp-php54..81` and FastPan
 │   ├── FASTPANEL_PHP7.4_DEBIAN11_MANUAL.md                    # Compilation guide: Debian 11 native .deb (RU)
 │   └── FASTPANEL_PHP8.1_PATCHING_MANUAL.md                    # Compilation guide: FastPanel /opt/php81 (RU)
 ├── check_php_cve.sh                                           # Universal Read-Only Security Scanner v1.4
+├── LICENSE                                                    # Dual/Split License (MIT + PHP License v3.01 / Zend v2.00)
 ├── README.md                                                  # English documentation (Default)
 └── README.ru.md                                               # Russian documentation (На русском языке)
 ```
@@ -247,9 +248,14 @@ Each patch has undergone a rigorous academic audit, dry-run testing against pris
 
 ## 📄 License
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-007ec6?style=for-the-badge)](LICENSE)
+[![License: MIT / PHP-3.01](https://img.shields.io/badge/License-MIT%20%2F%20PHP--3.01-007ec6?style=for-the-badge)](LICENSE)
 
-This project is open-source software licensed under the [MIT License](LICENSE).
+- **Audit Scanner (`check_php_cve.sh`), Documentation (`README*`), Deployment Manuals (`manuals/`), and Technical Audit Reports (`analysis/`):**  
+  Licensed under the **[MIT License](LICENSE)**.
+- **PHP Core Security Patches & Adapted Extension Sources (`patches/`):**  
+  Derived from upstream `php-src` and distributed under their respective original licenses: **[The PHP License v3.01](https://www.php.net/license/3_01.txt)** (`Copyright (c) The PHP Group`) and **[The Zend Engine License v2.00](https://www.zend.com/license/2_00.txt)** (`Copyright (c) Zend Technologies Ltd.`).
+
+> *Disclaimer: PHP is a copyright of The PHP Group. This project is an independent security audit and patching toolkit designed to work in conjunction with PHP and is not endorsed by or affiliated with The PHP Group.*
 
 ---
 

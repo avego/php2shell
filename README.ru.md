@@ -14,7 +14,7 @@
 
 [![Panels](https://img.shields.io/badge/Panels-FastPanel%20%7C%20ISPmanager%20%7C%20cPanel%20%7C%20Plesk%20%7C%20aaPanel%20%7C%20BrainyCP%20%7C%20CWP%20%7C%20RunCloud%20%7C%20HestiaCP%20%7C%20DirectAdmin%20%7C%20CloudLinux-4c1?style=flat-square)](#)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-007ec6?style=flat-square)](LICENSE)
+[![License: MIT / PHP-3.01](https://img.shields.io/badge/License-MIT%20%2F%20PHP--3.01-007ec6?style=flat-square)](LICENSE)
 
 </div>
 
@@ -155,6 +155,7 @@ curl -sSL "https://raw.githubusercontent.com/avego/php2shell/main/check_php_cve.
 │   ├── ...
 │   └── PHP-8.1-PATCH-ANALYSIS.md / .en.md
 ├── check_php_cve.sh                                           # Универсальный Read-Only сканер безопасности v1.4
+├── LICENSE                                                    # Комбинированная лицензия (MIT + PHP License v3.01 / Zend v2.00)
 ├── README.md                                                  # Документация на английском (по умолчанию)
 └── README.ru.md                                               # Документация на русском языке
 ```
@@ -247,9 +248,14 @@ systemctl restart fp2-phpXX-fpm 2>/dev/null || systemctl restart phpXX-fpm 2>/de
 
 ## 📄 Лицензия
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-007ec6?style=for-the-badge)](LICENSE)
+[![License: MIT / PHP-3.01](https://img.shields.io/badge/License-MIT%20%2F%20PHP--3.01-007ec6?style=for-the-badge)](LICENSE)
 
-Проект распространяется под свободной лицензией [MIT](LICENSE).
+- **Сканер безопасности (`check_php_cve.sh`), документация (`README*`), пошаговые руководства (`manuals/`) и отчёты технического аудита (`analysis/`):**  
+  распространяются под свободной лицензией **[MIT License](LICENSE)**.
+- **Патчи безопасности ядра PHP и адаптированные исходные коды расширений (`patches/`):**  
+  являются производными модификациями кодовой базы `php-src` и распространяются на условиях оригинальных лицензий **[The PHP License v3.01](https://www.php.net/license/3_01.txt)** (`Copyright (c) The PHP Group`) и **[The Zend Engine License v2.00](https://www.zend.com/license/2_00.txt)** (`Copyright (c) Zend Technologies Ltd.`).
+
+> *Примечание: права на наименование и исходный код PHP принадлежат The PHP Group. Данный проект является независимым инструментарием аудита безопасности и патчинга, предназначенным для работы совместно с PHP, и не аффилирован с The PHP Group.*
 
 ---
 
