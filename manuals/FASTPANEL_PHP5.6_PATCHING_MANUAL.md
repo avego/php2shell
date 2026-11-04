@@ -142,10 +142,10 @@ make -j$(nproc) sapi/cgi/php-cgi sapi/cli/php sapi/fpm/php-fpm
 Чтобы веб-сервер не выдал ошибку `Text file busy`, бинарники копируются с помощью утилиты `install`:
 
 ```bash
-# 1. Установка скомпилированных бинарников на место:
-install -m 755 sapi/cli/php /opt/php56/bin/php
-install -m 755 sapi/cgi/php-cgi /opt/php56/bin/php-cgi
-[ -f sapi/fpm/php-fpm ] && install -m 755 sapi/fpm/php-fpm /opt/php56/sbin/php-fpm 2>/dev/null || true
+# 1. Установка скомпилированных бинарников на место (полные пути работают из любой директории):
+install -m 755 /usr/src/php-5.6.40/sapi/cli/php /opt/php56/bin/php
+install -m 755 /usr/src/php-5.6.40/sapi/cgi/php-cgi /opt/php56/bin/php-cgi
+[ -f /usr/src/php-5.6.40/sapi/fpm/php-fpm ] && install -m 755 /usr/src/php-5.6.40/sapi/fpm/php-fpm /opt/php56/sbin/php-fpm 2>/dev/null || true
 
 # 2. Остановка зависших процессов FastCGI:
 killall -9 php-cgi 2>/dev/null || true

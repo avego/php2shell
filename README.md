@@ -186,9 +186,9 @@ Several control panel vendors (such as ISPmanager in `isp-php54..81` and FastPan
 3. **Atomic Binary Replacement (`install -m 755`):**
    Avoid `Text file busy` errors on running workers by installing binaries atomically:
    ```bash
-   install -m 755 sapi/cli/php /opt/phpXX/bin/php
-   install -m 755 sapi/cgi/php-cgi /opt/phpXX/bin/php-cgi
-   [ -f sapi/fpm/php-fpm ] && install -m 755 sapi/fpm/php-fpm /opt/phpXX/sbin/php-fpm 2>/dev/null || true
+   install -m 755 /usr/src/php-X.Y.Z/sapi/cli/php /opt/phpXX/bin/php
+   install -m 755 /usr/src/php-X.Y.Z/sapi/cgi/php-cgi /opt/phpXX/bin/php-cgi
+   [ -f /usr/src/php-X.Y.Z/sapi/fpm/php-fpm ] && install -m 755 /usr/src/php-X.Y.Z/sapi/fpm/php-fpm /opt/phpXX/sbin/php-fpm 2>/dev/null || true
    ```
 
 ---

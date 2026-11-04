@@ -137,15 +137,15 @@ make -j$(nproc)
 
 1. Проверяем наличие защитных символов ядра OOM:
 ```bash
-strings sapi/cli/php | grep memory_hard_limit_percent
-strings sapi/fpm/php-fpm | grep memory_hard_limit_percent
-sapi/cli/php -i | grep memory_hard_limit_percent
+strings /usr/src/php73-fphp/php-7.3.33/sapi/cli/php | grep memory_hard_limit_percent
+strings /usr/src/php73-fphp/php-7.3.33/sapi/fpm/php-fpm | grep memory_hard_limit_percent
+/usr/src/php73-fphp/php-7.3.33/sapi/cli/php -i | grep memory_hard_limit_percent
 ```
 
-2. Атомарно устанавливаем бинарные файлы с правами `755`:
+2. Атомарно устанавливаем бинарные файлы с правами `755` (с полными путями, чтобы команда работала из любой директории):
 ```bash
-install -m 755 sapi/cli/php /opt/fphp/bin/php
-install -m 755 sapi/fpm/php-fpm /opt/fphp/sbin/php-fpm
+install -m 755 /usr/src/php73-fphp/php-7.3.33/sapi/cli/php /opt/fphp/bin/php
+install -m 755 /usr/src/php73-fphp/php-7.3.33/sapi/fpm/php-fpm /opt/fphp/sbin/php-fpm
 ```
 
 3. Перезапускаем сервис панели FastPanel:

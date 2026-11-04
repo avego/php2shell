@@ -118,10 +118,10 @@ make -j$(nproc) sapi/cgi/php-cgi sapi/cli/php sapi/fpm/php-fpm
 ## 6. Атомарная замена бинарников и перезапуск веб-серверов
 
 ```bash
-# 1. Заменяем бинарники через install (избегаем Text file busy)
-install -m 755 sapi/cli/php /opt/php81/bin/php
-install -m 755 sapi/cgi/php-cgi /opt/php81/bin/php-cgi
-[ -f sapi/fpm/php-fpm ] && install -m 755 sapi/fpm/php-fpm /opt/php81/sbin/php-fpm 2>/dev/null || true
+# 1. Заменяем бинарники через install (избегаем Text file busy; полные пути работают из любой директории)
+install -m 755 /usr/src/php-8.1.29/sapi/cli/php /opt/php81/bin/php
+install -m 755 /usr/src/php-8.1.29/sapi/cgi/php-cgi /opt/php81/bin/php-cgi
+[ -f /usr/src/php-8.1.29/sapi/fpm/php-fpm ] && install -m 755 /usr/src/php-8.1.29/sapi/fpm/php-fpm /opt/php81/sbin/php-fpm 2>/dev/null || true
 
 # 2. Убиваем зависшие старые воркеры php-cgi
 killall -9 php-cgi 2>/dev/null || true
